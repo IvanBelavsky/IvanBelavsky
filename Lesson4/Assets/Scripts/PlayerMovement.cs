@@ -12,7 +12,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float _speed;
     [SerializeField] private float _speedForce;
     [SerializeField] private int _jumpCount;
-    private Vector3 _moveDistance;
     private int _killsEnemyCount;
     void Start()
     {
@@ -22,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //float horizontal = Input.GetAxis("Horizontal");
         //float vertical = Input.GetAxis("Vertical");
-        //_moveDirection = new Vector3(horizontal, 0, vertical) * _speed;
+        //Vector3 _moveDirection = new Vector3(horizontal, 0, vertical) * _speed;
         //_rigidbody.velocity = _moveDirection;
 
         if (Input.GetKey(KeyCode.W))
@@ -57,12 +56,12 @@ public class PlayerMovement : MonoBehaviour
             if (_mass.Amount > collision.gameObject.GetComponent<Mass>().Amount)
             {
                 //Home work *
-                _moveDistance = (collision.transform.position - transform.position).normalized;
+                Vector3 moveDistance = (collision.transform.position - transform.position).normalized;
                 _enemyRigidbody = collision.gameObject.GetComponent<Rigidbody>();
-                _enemyRigidbody.AddForce(_moveDistance * _speedForce, ForceMode.Impulse);
+                _enemyRigidbody.AddForce(moveDistance * _speedForce, ForceMode.Impulse);
                 //_mass.Amount += collision.gameObject.GetComponent<Mass>().Amount;
                 //transform.localScale = new Vector3(_mass.Amount, _mass.Amount, _mass.Amount);
-                //Destroy(collision.gameObject);
+                //Destroy(collision.gameObject);`
                 //_killsEnemyCount++;
                 //Debug.Log("Player killed enemies: " + _killsEnemyCount);
                 //Debug.Log("Player size: " + _mass.Amount);
