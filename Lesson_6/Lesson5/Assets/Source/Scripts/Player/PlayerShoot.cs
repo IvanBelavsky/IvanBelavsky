@@ -14,6 +14,7 @@ public class PlayerShoot : MonoBehaviour
     [SerializeField] private float _timeReload;
     [SerializeField] public int _numberBalls;
     [SerializeField] private int _valueBall;
+    private Coroutine _reload;
     private void Start()
     {
         _numberBalls = _valueBall;
@@ -24,10 +25,11 @@ public class PlayerShoot : MonoBehaviour
         {
             StartCoroutine(ShootTick());
         }
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKeyDown(KeyCode.R) && _reload == null)
         {
             _counter.text = "Loading...";
-            StartCoroutine(Reload());
+            _reload = StartCoroutine(Reload());
+            _reload = null;
         }
     }
     private void CreateBall()
