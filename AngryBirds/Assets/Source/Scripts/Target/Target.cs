@@ -7,12 +7,12 @@ public class Target : MonoBehaviour, ITargetable
     {
         if (collision.gameObject.GetComponent<Bird>())
         {
-            TargetChange();
+            Hit();
             Destroy(collision.gameObject);
         }
     }
 
-    public void TargetChange()
+    public void Hit()
     {
         transform.localScale *= 2;
     }

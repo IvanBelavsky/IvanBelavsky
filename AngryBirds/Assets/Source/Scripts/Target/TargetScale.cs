@@ -15,12 +15,12 @@ public class TargetScale : MonoBehaviour, ITargetable
     {
         if (collision.gameObject.GetComponent<Bird>())
         {
-            TargetChange();
+            Hit();
             collision.gameObject.transform.localScale *= 2;
         }
     }
 
-    public void TargetChange()
+    public void Hit()
     {
         _renderer.material.color = Random.ColorHSV();
     }

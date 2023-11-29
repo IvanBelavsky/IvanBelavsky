@@ -7,7 +7,7 @@ public class TargetPig : MonoBehaviour, ITargetable
     [SerializeField] private float _maxVelossity;
     [SerializeField] private Target _target;
 
-    public void TargetChange()
+    public void Hit()
     {
         Destroy(gameObject);
     }
@@ -16,11 +16,11 @@ public class TargetPig : MonoBehaviour, ITargetable
     {
         if (collision.gameObject.GetComponent<Bird>() && collision.gameObject.GetComponent<Rigidbody2D>().velocity.magnitude >= _maxVelossity)
         {
-            TargetChange();
+            Hit();
         }
         if (collision.gameObject.GetComponent<Target>())
         {
-            TargetChange();
+            Hit();
         }
     }
 

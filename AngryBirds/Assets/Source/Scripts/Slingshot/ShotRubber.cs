@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
 public class ShotRubber : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class ShotRubber : MonoBehaviour
 
     [SerializeField] private float _maxDistance;
     [SerializeField] private float _speed;
+    [SerializeField] private CounterUI _counter;
     private Bird _bird;
     private Vector2 _start;
     private Camera _camera;
@@ -49,6 +51,7 @@ public class ShotRubber : MonoBehaviour
         transform.position = _start;
         Vector2 delte = _start - releasePosition;
         _bird.Launch(delte * _speed);
+        _counter.RemoveCount(1);
         _bird = null;
         _canShoot = false;
         OnRealseShoot?.Invoke();

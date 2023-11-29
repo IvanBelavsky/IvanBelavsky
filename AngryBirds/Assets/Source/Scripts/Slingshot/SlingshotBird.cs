@@ -4,18 +4,19 @@ using UnityEngine;
 
 public class SlingshotBird : MonoBehaviour
 {
-    [SerializeField] private float _maxAmmo;
+    [field: SerializeField] public float MaxAmmo { get; private set; }
     [SerializeField] private float _delay;
     [SerializeField] private ShotRubber _point;
     [SerializeField] private Transform _rubberPosition;
     [SerializeField] private BirdsFactory _factory;
     [SerializeField] private Transform _startPosition;
+    [SerializeField] private CounterUI _counter;
     private Coroutine _delayTick;
     private float _currenAmmo;
 
     private void Awake()
     {
-        _currenAmmo = _maxAmmo;
+        _currenAmmo = MaxAmmo;
         NextBird();
         _point.OnRealseShoot += NextBird;
     }

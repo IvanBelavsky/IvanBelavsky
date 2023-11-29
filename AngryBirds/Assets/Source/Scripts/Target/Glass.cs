@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Glass : MonoBehaviour, ITargetable
 {
-    public void TargetChange()
+    public void Hit()
     {
         Destroy(gameObject);
     }
@@ -13,7 +13,7 @@ public class Glass : MonoBehaviour, ITargetable
     {
         if (collision.gameObject.GetComponent<Bird>())
         {
-            TargetChange();
+            Hit();
         }
     }
 }

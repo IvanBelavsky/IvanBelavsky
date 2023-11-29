@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
@@ -8,6 +9,7 @@ public class Bird : MonoBehaviour
 {
     private Rigidbody2D _rigidBody;
     [SerializeField] private Transform _shootPoint;
+    [SerializeField] private CounterUI _counter;
     [SerializeField] private bool _isCanLaunch = false;
     [SerializeField] private float _speed;
 
@@ -27,7 +29,11 @@ public class Bird : MonoBehaviour
         {
             SpeedChange(_speed);
         }
+    }
 
+    public void SetCounter(CounterUI count)
+    {
+        _counter = count;
     }
 
     public void SetPoint(Transform shootPoint, Transform startPoint)
