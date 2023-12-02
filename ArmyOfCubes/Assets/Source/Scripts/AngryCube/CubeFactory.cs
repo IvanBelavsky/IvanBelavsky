@@ -17,6 +17,7 @@ public class CubeFactory : MonoBehaviour
     {
        return Instantiate(_cube, position, Quaternion.Euler(new Vector3(0, 180, 0)), parent).GetComponent<AngryCube>();
     }
+
     public CubeColor CreatedColorCubes(Vector3 position, Transform parent)
     {
         return Instantiate(_cubeColor, position, Quaternion.identity, parent).GetComponent<CubeColor>();

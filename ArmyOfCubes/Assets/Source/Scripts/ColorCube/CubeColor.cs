@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class CubeColor : MonoBehaviour
+public class CubeColor : Cube
 {
     [SerializeField] private float _speedSlow;
     private Rigidbody _rigidbody;
@@ -12,13 +12,12 @@ public class CubeColor : MonoBehaviour
         _meshRenderer = GetComponent<MeshRenderer>();
     }
 
-    public CubeColor MoveColorCube(Vector3 direction)
+    public override void Move(Vector3 direction)
     {
         _rigidbody.velocity = direction * _speedSlow;
-        return this;
     }
 
-    public CubeColor Color()
+    public CubeColor SetRandomColor()
     {
         _meshRenderer.material.color = Random.ColorHSV();
         return this;

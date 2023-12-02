@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CubeFactory))]
-public class Spawner : MonoBehaviour
+public class SpawnerCubes : MonoBehaviour
 {
     private List<AngryCube> _cubes = new List<AngryCube>();
     private List<CubeColor> _cubeColor = new List<CubeColor>();
@@ -36,7 +36,7 @@ public class Spawner : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.S))
         {
-            if (_cubes != null && _cubeColor != null)
+            if (_moveTick != null && _moveTickColorCubes != null)
             {
                 StopCoroutine(_moveTick);
                 _moveTick = null;
@@ -59,6 +59,7 @@ public class Spawner : MonoBehaviour
             }
         }
     }
+
     private IEnumerator MoveTickColorCubes()
     {
         while (true)
@@ -66,7 +67,8 @@ public class Spawner : MonoBehaviour
             foreach (CubeColor color in _cubeColor)
             {
                 yield return new WaitForSeconds(0.5f);
-                color.MoveColorCube(-Vector3.forward).Color();
+                color.Move(-Vector3.forward);
+                color.SetRandomColor();
             }
         }
     }

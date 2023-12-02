@@ -2,7 +2,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(BoxCollider))]
-public class AngryCube : MonoBehaviour
+public class AngryCube : Cube
 {
     [SerializeField] private protected float _speed;
     private Rigidbody _rigidbody;
@@ -11,10 +11,9 @@ public class AngryCube : MonoBehaviour
         _rigidbody = GetComponent<Rigidbody>();
     }
 
-    public AngryCube Move(Vector3 direction)
+    public override void Move(Vector3 direction)
     {
         _rigidbody.velocity = direction * _speed;
-        return this;
     }
 
     public AngryCube Jump (Vector3 up, Vector3 direction)
