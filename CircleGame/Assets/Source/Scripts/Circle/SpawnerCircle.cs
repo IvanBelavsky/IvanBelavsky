@@ -43,7 +43,6 @@ public class SpawnerCircle : MonoBehaviour
     {
         _text.text = "GAME OVER";
         _pauseScene = StartCoroutine(PauseScene());
-        RestartScene();
     }
 
     private void RestartScene()
@@ -60,6 +59,7 @@ public class SpawnerCircle : MonoBehaviour
     private IEnumerator PauseScene()
     {
         yield return new WaitForSeconds(2);
+        RestartScene();
     }
 
     private IEnumerator SpawnCircle()
@@ -106,7 +106,6 @@ public class SpawnerCircle : MonoBehaviour
                 {
                     _text.text = "YOU VINNER";
                     _pauseScene = StartCoroutine(PauseScene());
-                    RestartScene();
                 }
             }
         }
