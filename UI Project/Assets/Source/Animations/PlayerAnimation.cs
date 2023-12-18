@@ -17,15 +17,15 @@ public class PlayerAnimation : MonoBehaviour
 
     private void StatePlayer(int index)
     {
-        if (_dropdown.options[0].text == "Idle")
+        if (_dropdown.value == 0)
         {
             _animator.Play("Idle");
         }
-        if (_dropdown.options[2].text == "Run")
+        if (_dropdown.value == 1)
         {
             _animator.Play("Run");
         }
-        if (_dropdown.options[1].text == "Jump")
+        if (_dropdown.value == 2)
         {
             _animator.Play("Jump");
         }

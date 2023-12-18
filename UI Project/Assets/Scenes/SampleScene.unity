@@ -2256,9 +2256,9 @@ MonoBehaviour:
     m_Options:
     - m_Text: Idle
       m_Image: {fileID: 0}
-    - m_Text: Jump
-      m_Image: {fileID: 0}
     - m_Text: Run
+      m_Image: {fileID: 0}
+    - m_Text: Jump
       m_Image: {fileID: 0}
   m_OnValueChanged:
     m_PersistentCalls:
