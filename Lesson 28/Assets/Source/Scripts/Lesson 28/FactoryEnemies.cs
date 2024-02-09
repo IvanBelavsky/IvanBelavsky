@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class FactoryEnemies : MonoBehaviour
 {
-    
     private Enemy _enemy;
 
     private void Awake()
