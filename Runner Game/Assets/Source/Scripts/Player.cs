@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -8,6 +9,9 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(Animator))]
 public class Player : MonoBehaviour
 {
+    public Action OnShakeCameraChange;
+    public Action OnShakeCameraDisable;
+
     [SerializeField] private float _speed;
     [SerializeField] private float _health;
     [SerializeField] private float _minValueY, _maxValueY;
@@ -29,6 +33,7 @@ public class Player : MonoBehaviour
     {
         if (_health <= 0)
             Die();
+
         Movement();
     }
 
@@ -41,17 +46,20 @@ public class Player : MonoBehaviour
         {
             _rigidbody.velocity = Vector2.up * _speed;
             Instantiate(_effect, transform.position, Quaternion.identity);
+            OnShakeCameraChange?.Invoke();
         }
 
         if (Input.GetKeyDown(KeyCode.S))
         {
             _rigidbody.velocity = Vector2.down * _speed;
             Instantiate(_effect, transform.position, Quaternion.identity);
+            OnShakeCameraChange?.Invoke();
         }
 
         if (!Input.GetKey(KeyCode.S) && !Input.GetKey(KeyCode.W))
         {
             _rigidbody.velocity = Vector2.zero;
+            OnShakeCameraDisable?.Invoke();
         }
     }
 
@@ -72,6 +80,7 @@ public class Player : MonoBehaviour
 
     private void Die()
     {
+        OnShakeCameraChange?.Invoke();
         _dieTick = StartCoroutine(DieTick());
     }
 

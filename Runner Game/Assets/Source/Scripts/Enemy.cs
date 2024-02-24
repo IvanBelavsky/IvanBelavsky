@@ -23,10 +23,15 @@ public class Enemy : MonoBehaviour
 
     private void Start()
     {
+        Move();
+    }
+
+    private void Move()
+    {
         float random = Random.Range(5, 10);
         Vector3 startPos = transform.position; 
 
-        transform.DOMoveY(startPos.y + 1f, 1f)
+        transform.DOMoveY(startPos.y + 1.7f, 1f)
             .SetLoops(-1, LoopType.Yoyo)
             .SetEase(Ease.InOutSine);
         transform.DOMoveX(startPos.x - _speed, random)
