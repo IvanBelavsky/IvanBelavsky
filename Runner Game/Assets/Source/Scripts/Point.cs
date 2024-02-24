@@ -16,5 +16,6 @@ public class Point : MonoBehaviour
     private void Start()
     {
         _factory.CreateTarget(transform.position);
+        _factory.CreateEnemy(transform.position);
     }
 }

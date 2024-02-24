@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 
@@ -28,12 +27,17 @@ public class Ammo : MonoBehaviour
         {
             Die();
         }
+
+        if (other.gameObject.TryGetComponent(out Enemy enemy))
+        {
+            Die();
+            enemy.TakeDamage(Damage);
+        }
     }
 
     private void Die()
     {
         _animator.SetBool("IsDie", true);
-        _animator.Play("Enemt-death-Animation");
         _dieTick = StartCoroutine(DieTick());
     }
 
