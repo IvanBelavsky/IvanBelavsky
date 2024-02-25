@@ -1,8 +1,7 @@
-using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class CameraShake : MonoBehaviour
+public class CameraShake : MonoBehaviour, ISetupPlayer
 {
     [SerializeField] private Player _player;
     private Animator _animator;
@@ -12,7 +11,7 @@ public class CameraShake : MonoBehaviour
         _animator = GetComponent<Animator>();
     }
 
-    private void OnEnable()
+    private void Start()
     {
         _player.OnShakeCameraChange += Shake;
         _player.OnShakeCameraDisable += DisableShake;
@@ -24,6 +23,11 @@ public class CameraShake : MonoBehaviour
         _player.OnShakeCameraDisable -= DisableShake;
     }
 
+    public void SetUpPlaer(Player player)
+    {
+        _player = player;
+    }
+    
     private void DisableShake()
     {
         _animator.SetBool("IsShake", false);

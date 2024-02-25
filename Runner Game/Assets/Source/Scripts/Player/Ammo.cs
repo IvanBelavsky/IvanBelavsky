@@ -9,6 +9,7 @@ public class Ammo : MonoBehaviour
 
     private Animator _animator;
     private Coroutine _dieTick;
+    
     [field: SerializeField] public float Damage { get; private set; }
 
     private void Awake()

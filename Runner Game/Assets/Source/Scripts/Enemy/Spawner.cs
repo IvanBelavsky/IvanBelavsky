@@ -1,14 +1,10 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 [RequireComponent(typeof(Factory))]
 public class Spawner : MonoBehaviour
 {
-    public Action OnpeedChange;
-
     [SerializeField] private float _decreaseTime;
     [SerializeField] private float _minTime;
     [SerializeField] private float _delay;
@@ -30,7 +26,6 @@ public class Spawner : MonoBehaviour
             if (_delay > _minTime)
             {
                 _delay -= _decreaseTime;
-                    OnpeedChange?.Invoke();
             }
 
             yield return new WaitForSeconds(_delay);
