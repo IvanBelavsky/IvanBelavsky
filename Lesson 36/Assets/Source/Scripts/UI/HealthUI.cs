@@ -24,7 +24,7 @@ public class HealthUI : MonoBehaviour
         _player.OnHealthChange -= HealthUpdate;
     }
 
-    public void SetupPlayer(PlayerHealth player)
+    public void Setup(PlayerHealth player)
     {
         _player = player;
         if (_player != null)

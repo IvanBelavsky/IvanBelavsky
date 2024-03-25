@@ -14,7 +14,7 @@ public class PlayerAttack : MonoBehaviour
     private void Awake()
     {
         _audioSource = GetComponent<AudioSource>();
-        _ammoPlayer = Resources.Load<AmmoPlayer>("Ammo");
+        _ammoPlayer = Resources.Load<AmmoPlayer>("Ammo/Ammo");
     }
 
     private void Update()
@@ -34,7 +34,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void AudioAttack()
     {
-        _audioSource.clip = Resources.Load<AudioClip>("Attack");
+        _audioSource.clip = Resources.Load<AudioClip>("Audio/Attack");
         _audioSource.pitch = Random.Range(2.5f, 3.5f);
         _audioSource.Play();
     }

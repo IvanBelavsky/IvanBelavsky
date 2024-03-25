@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float _speed;
+    [SerializeField] private float _minX, _maxX;
+    private float direction;
 
     private Rigidbody2D _rigidbody;
 
@@ -20,7 +23,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
-        float direction = Input.GetAxis("Horizontal");
+        direction = Input.GetAxis("Horizontal");
         _rigidbody.velocity = new Vector2(direction * _speed, _rigidbody.velocity.y);
     }
 }

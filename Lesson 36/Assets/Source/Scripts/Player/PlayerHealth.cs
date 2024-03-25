@@ -6,7 +6,6 @@ using UnityEngine.SceneManagement;
 public class PlayerHealth : MonoBehaviour, IDamageble
 {
     public Action OnHealthChange;
-
     public Action OnTakeBonus;
 
     [SerializeField] private bool _isDie;
@@ -18,7 +17,7 @@ public class PlayerHealth : MonoBehaviour, IDamageble
 
     private void Awake()
     {
-        _dieAnimation = Resources.Load<Destroyer>("Destroy");
+        _dieAnimation = Resources.Load<Destroyer>("Animations/Destroy");
     }
 
     private void OnTriggerEnter2D(Collider2D other)

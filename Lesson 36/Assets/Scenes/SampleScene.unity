@@ -1112,6 +1112,7 @@ GameObject:
   - component: {fileID: 2117188338}
   - component: {fileID: 2117188340}
   - component: {fileID: 2117188341}
+  - component: {fileID: 2117188342}
   m_Layer: 0
   m_Name: EntryPoint
   m_TagString: Untagged
@@ -1159,24 +1160,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _pointPlayer: {fileID: 710752441}
-  _pointRedEnemy: {fileID: 645832000}
-  _pointGreenEnemy: {fileID: 298084008}
-  _pointYellowEnemy: {fileID: 36664081}
   _pointScore: {fileID: 900586947}
   _pointHealthUI: {fileID: 956359419}
   _canvas: {fileID: 1496612832}
-  _minRows: 2
-  _maxRows: 6
-  _distanceRows: 0.4
-  _minDelay: 7
-  _maxDelay: 15
-  _minValue: -15
-  _maxValue: 15
-  _chanceRed: 1
-  _chanceGreen: 9
-  _chanceYellow: -2
-  _delayRandomValue: 2
-  _takeTimeBonus: 20
+  _spawnEnemy: {fileID: 2117188342}
 --- !u!114 &2117188341
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1189,6 +1176,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06cccb2c9bede5e468621d971e4fddc4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2117188342
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2117188337}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d025cafa2571982449c0ec03479e7a5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _pointRedEnemy: {fileID: 645832000}
+  _pointGreenEnemy: {fileID: 298084008}
+  _pointYellowEnemy: {fileID: 36664081}
+  _minRows: 2
+  _maxRows: 5
+  _distanceRows: 0.5
+  _minValue: -10
+  _maxValue: 20
+  _minDelay: 5
+  _maxDelay: 10
+  _takeTimeBonus: 30
+  _delayRandomValue: 2
+  _chanceRed: 3
+  _chanceGreen: 1
+  _chanceYellow: 9
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -14,19 +14,22 @@ public class Score : MonoBehaviour
 
     private void Start()
     {
-        _enemy.OnScoreChange += AddScore;
+        if (_enemy != null)
+            _enemy.OnScoreChange += AddScore;
     }
 
     private void OnDisable()
     {
-        _enemy.OnScoreChange -= AddScore;
+        if (_enemy != null)
+            _enemy.OnScoreChange -= AddScore;
     }
 
-    public void SetupEnemy(Enemy enemy)
+    public void Setup(Enemy enemy)
     {
-        _enemy = enemy;
         if (_enemy != null)
             _enemy.OnScoreChange += AddScore;
+
+        _enemy = enemy;
     }
 
     private void AddScore()

@@ -16,7 +16,7 @@ public class AmmoBasic : MonoBehaviour
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _audioSource = GetComponent<AudioSource>();
-        _hitAnimation = Resources.Load<Destroyer>("Hit");
+        _hitAnimation = Resources.Load<Destroyer>("Animations/Hit");
     }
 
     private void Start()
@@ -44,7 +44,7 @@ public class AmmoBasic : MonoBehaviour
         GameObject newAudio = new GameObject();
         newAudio.transform.position = transform.position;
         AudioSource audioSource = newAudio.AddComponent<AudioSource>();
-        audioSource.clip = Resources.Load<AudioClip>("Hit");
+        audioSource.clip = Resources.Load<AudioClip>("Audio/Hit");
         audioSource.Play();
         Destroy(newAudio, 1);
     }

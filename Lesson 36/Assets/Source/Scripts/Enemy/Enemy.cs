@@ -9,7 +9,6 @@ public class Enemy : MonoBehaviour, IDamageble
     [SerializeField] private float _health;
     [SerializeField] private float _damage;
     [SerializeField] private bool _isDie;
-    [SerializeField] private int _randomChance;
 
     public void TakeDamage(float damage)
     {

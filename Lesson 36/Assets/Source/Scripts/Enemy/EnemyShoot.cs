@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class EnemyShoot : MonoBehaviour
 {
@@ -8,16 +10,17 @@ public class EnemyShoot : MonoBehaviour
     [SerializeField] private float _shootMax;
 
     private EnemyAmmo _ammo;
+    private Coroutine _shootTick;
 
     private void Awake()
     {
-        _ammo = Resources.Load<EnemyAmmo>("EnemyAmmo");
+        _ammo = Resources.Load<EnemyAmmo>("Ammo/EnemyAmmo");
     }
 
     private void Start()
     {
         _shootTime = Random.Range(_shootMin, _shootMax);
-        StartCoroutine(ShootTick());
+        _shootTick = StartCoroutine(ShootTick());
     }
 
     private IEnumerator ShootTick()

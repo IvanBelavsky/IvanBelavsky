@@ -8,9 +8,9 @@ public class FactoryEnemy : MonoBehaviour
 
     private void Awake()
     {
-        _enemyRed = Resources.Load<Enemy>("RedEnemy");
-        _enemyGreen = Resources.Load<Enemy>("GreenEnemy");
-        _enemyYellow = Resources.Load<Enemy>("YellowEnemy");
+        _enemyRed = Resources.Load<Enemy>("Enemies/RedEnemy");
+        _enemyGreen = Resources.Load<Enemy>("Enemies/GreenEnemy");
+        _enemyYellow = Resources.Load<Enemy>("Enemies/YellowEnemy");
     }
 
     public Enemy CreateEnemyRed(Vector2 position)

@@ -21,9 +21,10 @@ public class Bonus : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.TryGetComponent(out PlayerHealth payer))
+        if (other.gameObject.TryGetComponent(out PlayerHealth player))
         {
             Destroy(gameObject);
         }
     }
+    
 }
