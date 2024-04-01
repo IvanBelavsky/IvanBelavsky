@@ -1,0 +1,67 @@
+using System.Collections;
+using UnityEngine;
+
+public class EnemyShoot : MonoBehaviour, IPauseble
+{
+    [SerializeField] private float _shootTime;
+    [SerializeField] private float _shootMin;
+    [SerializeField] private float _shootMax;
+
+    private EnemyAmmo _ammo;
+    private Coroutine _shootTick;
+    private ButtonsUI _buttonsUI;
+    private bool _isPause;
+
+    private void Awake()
+    {
+        _ammo = Resources.Load<EnemyAmmo>("Ammo/EnemyAmmo");
+    }
+
+    private void Start()
+    {
+        _shootTime = Random.Range(_shootMin, _shootMax);
+        _shootTick = StartCoroutine(ShootTick());
+        _buttonsUI.OnClickPauseButton += PlayPause;
+        _buttonsUI.OnClickPlayButton += Continue;
+        _ammo.Setup(_buttonsUI);
+    }
+
+    private void OnDisable()
+    {
+        _buttonsUI.OnClickPauseButton -= PlayPause;
+        _buttonsUI.OnClickPlayButton -= Continue;
+    }
+
+    public void Setup(ButtonsUI buttonsUI)
+    {
+        _buttonsUI = buttonsUI;
+    }
+
+    public void PlayPause()
+    {
+        _isPause = true;
+        if (_shootTick != null && _isPause)
+            StopCoroutine(_shootTick);
+    }
+
+    public void Continue()
+    {
+        _isPause = false;
+        if (!_isPause)
+            _shootTick = StartCoroutine(ShootTick());
+    }
+
+    private IEnumerator ShootTick()
+    {
+        while (true)
+        {
+            _shootTime--;
+            yield return new WaitForSeconds(_shootTime);
+            if (_shootTime <= 0)
+            {
+                Instantiate(_ammo, transform.position, Quaternion.Euler(0, 0, 180));
+                _shootTime = Random.Range(_shootMin, _shootMax);
+            }
+        }
+    }
+}
