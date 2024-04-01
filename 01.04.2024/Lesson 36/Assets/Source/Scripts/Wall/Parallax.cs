@@ -1,28 +1,38 @@
 using System;
 using UnityEngine;
 
-public class Prallax : MonoBehaviour, IPauseble
+public class Parallax : MonoBehaviour, IPauseble
 {
     [SerializeField] private float _startPosition;
     [SerializeField] private float _endPosition;
     [SerializeField] private float _speed;
     [SerializeField] private float _startSpeed;
 
+    private ButtonsUI _buttons;
+
     private void Start()
     {
         _startSpeed = _speed;
+        _buttons.OnClickPauseButton += PlayPause;
+        _buttons.OnClickPlayButton += Continue;
     }
 
     private void Update()
     {
         Move();
-        if (Input.GetKeyDown(KeyCode.B))
-            PlayPause();
-        if (Input.GetKeyDown(KeyCode.V))
-            Continue();
     }
 
+    private void OnDisable()
+    {
+        _buttons.OnClickPauseButton -= PlayPause;
+        _buttons.OnClickPlayButton -= Continue;
+    }
 
+    public void Setup(ButtonsUI buttonsUI)
+    {
+        _buttons = buttonsUI;
+    }
+    
     public void PlayPause()
     {
         _speed = 0;

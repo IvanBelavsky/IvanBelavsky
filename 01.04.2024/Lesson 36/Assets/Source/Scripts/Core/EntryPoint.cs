@@ -6,8 +6,9 @@ using UnityEngine.UI;
 [RequireComponent(typeof(ButtonsUI))]
 public class EntryPoint : MonoBehaviour
 {
-    [Header("Start points position"), Space(5)] [SerializeField]
-    private Transform _pointPlayer;
+    [Header("Start points position"), Space(5)] 
+    [SerializeField] private Transform _pointPlayer;
+    [SerializeField] private Transform _pointParallax;
 
     [SerializeField] private RectTransform _pointScoreUI;
     [SerializeField] private RectTransform _pointHealthUI;
@@ -27,7 +28,9 @@ public class EntryPoint : MonoBehaviour
     private Button _createdPauseButton;
     private Button _playButton;
     private Button _createdPlayButton;
-
+    private Parallax _parallax;
+    private Parallax _createdParallax;
+    
     private void Awake()
     {
         _spawnEnemy = GetComponent<SpawnerEnemies>();
@@ -38,6 +41,7 @@ public class EntryPoint : MonoBehaviour
         _healthUI = Resources.Load<HealthUI>("UI/Health");
         _pauseButton = Resources.Load<Button>("UI/PauseButton");
         _playButton = Resources.Load<Button>("UI/PlayButton");
+        _parallax = Resources.Load<Parallax>("UI/Parallax");
     }
 
     private void OnEnable()
@@ -47,11 +51,13 @@ public class EntryPoint : MonoBehaviour
         CreateHealthUI();
         CreatedPauseButtonUI();
         CreatedPlayButtonUI();
+        CreateParallax();
         _buttonsUI.Setup(_createdPauseButton, _createdPlayButton);
         _spawnEnemy.Setup(_buttonsUI);
         _spawnEnemy.Setup(_createdPlayer);
         _spawnEnemy.Setup(_createdScoreUI);
         _spawnEnemy.Setup(_factoryBonus);
+        _factoryBonus.Setup(_buttonsUI);
     }
 
     private void CreateScoreUI()
@@ -86,5 +92,11 @@ public class EntryPoint : MonoBehaviour
         _createdPlayer = Instantiate(_player, _pointPlayer.transform.position, Quaternion.identity);
         _createdPlayer.Setup(_buttonsUI);
         _createdPlayer.GetComponent<PlayerAttack>().Setup(_buttonsUI);
+    }
+    
+    private void CreateParallax()
+    {
+        _createdParallax = Instantiate(_parallax, _pointParallax.transform.position, Quaternion.identity);
+        _createdParallax.Setup(_buttonsUI);
     }
 }

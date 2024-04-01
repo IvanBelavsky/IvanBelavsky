@@ -62,14 +62,6 @@ public class SpawnerEnemies : MonoBehaviour, IPauseble
         _randomValueChanceTick = StartCoroutine(RandomValueChanceTick());
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.B))
-            PlayPause();
-        if (Input.GetKeyDown(KeyCode.V))
-            Continue();
-    }
-
     private void OnDisable()
     {
         _player.OnTakeBonus -= TakeBonus;
@@ -104,6 +96,8 @@ public class SpawnerEnemies : MonoBehaviour, IPauseble
             StopCoroutine(_spawnEnemiesTick);
         if (_randomValueChanceTick != null && _isPause)
             StopCoroutine(_randomValueChanceTick);
+        if (_takeBonusTick != null && _isPause)
+            StopCoroutine(_takeBonusTick);
     }
 
     public void Continue()
@@ -113,6 +107,7 @@ public class SpawnerEnemies : MonoBehaviour, IPauseble
         {
             _spawnEnemiesTick = StartCoroutine(SpawnEnemies());
             _randomValueChanceTick = StartCoroutine(RandomValueChanceTick());
+            _takeBonusTick = StartCoroutine(TakeBonusTick());
         }
     }
 
