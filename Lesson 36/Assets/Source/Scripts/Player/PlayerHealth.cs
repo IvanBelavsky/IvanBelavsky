@@ -14,19 +14,12 @@ public class PlayerHealth : MonoBehaviour, IDamageble, IPauseble
     [SerializeField] private float _damage;
 
     private Destroyer _dieAnimation;
-    private ButtonsUI _buttonsUI;
     private PauseService _pauseService;
 
     [Inject]
     public void Constructor(PauseService pauseService)
     {
         _pauseService = pauseService;
-    }
-    
-    [Inject]
-    public void Constructor(ButtonsUI buttonsUI)
-    {
-        _buttonsUI = buttonsUI;
     }
     
     [field: SerializeField] public float Health { get; private set; }
@@ -39,12 +32,6 @@ public class PlayerHealth : MonoBehaviour, IDamageble, IPauseble
     private void OnEnable()
     {
         _pauseService.AddPauses(this);
-    }
-
-    private void Start()
-    {
-        _buttonsUI.OnClickPauseButton += PlayPause;
-        _buttonsUI.OnClickPlayButton += Continue;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -62,8 +49,6 @@ public class PlayerHealth : MonoBehaviour, IDamageble, IPauseble
 
     private void OnDisable()
     {
-        _buttonsUI.OnClickPauseButton -= PlayPause;
-        _buttonsUI.OnClickPlayButton -= Continue;
         _pauseService.RemovePauses(this);
     }
 

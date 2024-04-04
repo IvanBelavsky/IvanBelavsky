@@ -4,7 +4,7 @@ using UnityEngine;
 using Zenject;
 using Random = UnityEngine.Random;
 
-public class EnemyShoot : MonoBehaviour, IPauseble
+public class EnemyShoot : MonoBehaviour
 {
     [SerializeField] private float _shootTime;
     [SerializeField] private float _shootMin;
@@ -17,12 +17,6 @@ public class EnemyShoot : MonoBehaviour, IPauseble
     private bool _isPause;
 
     [Inject]
-    public void Constructor(ButtonsUI buttonsUI)
-    {
-        _buttonsUI = buttonsUI;
-    }
-
-    [Inject]
     public void Constructor(DiContainer diContainer)
     {
         _diContainer = diContainer;
@@ -33,22 +27,11 @@ public class EnemyShoot : MonoBehaviour, IPauseble
         _ammo = Resources.Load<EnemyAmmo>("Ammo/EnemyAmmo");
     }
 
-    private void OnEnable()
-    {
-        _buttonsUI.OnClickPauseButton += PlayPause;
-        _buttonsUI.OnClickPlayButton += Continue;
-    }
 
     private void Start()
     {
         _shootTime = Random.Range(_shootMin, _shootMax);
         _shootTick = StartCoroutine(ShootTick());
-    }
-
-    private void OnDisable()
-    {
-        _buttonsUI.OnClickPauseButton -= PlayPause;
-        _buttonsUI.OnClickPlayButton -= Continue;
     }
 
     public void PlayPause()

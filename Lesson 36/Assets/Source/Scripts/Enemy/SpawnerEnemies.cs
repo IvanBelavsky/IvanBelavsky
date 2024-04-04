@@ -37,26 +37,28 @@ public class SpawnerEnemies : MonoBehaviour, IPauseble
     private Coroutine _spawnEnemiesTick;
     private Coroutine _randomValueChanceTick;
     private Coroutine _takeBonusTick;
-    private ButtonsUI _buttonsUI;
+    private PauseService _pauseService;
+    //private ButtonsUI _buttonsUI;
     private int _randomChance;
     private bool _isPause;
 
     [Inject]
-    public void Constructor(ButtonsUI buttonsUI)
+    public void Constructor(PauseService pauseService)
     {
-        _buttonsUI = buttonsUI;
-    } 
+        _pauseService = pauseService;
+    }
     
     private void Awake()
     {
         _factory = GetComponent<FactoryEnemy>();
+        _pauseService.AddPauses(this);
     }
 
     private void OnEnable()
     {
         _player.OnTakeBonus += TakeBonus;
-        _buttonsUI.OnClickPauseButton += PlayPause;
-        _buttonsUI.OnClickPlayButton += Continue;
+        //_buttonsUI.OnClickPauseButton += PlayPause;
+        //_buttonsUI.OnClickPlayButton += Continue;
     }
 
     private void Start()
@@ -68,8 +70,9 @@ public class SpawnerEnemies : MonoBehaviour, IPauseble
     private void OnDisable()
     {
         _player.OnTakeBonus -= TakeBonus;
-        _buttonsUI.OnClickPauseButton -= PlayPause;
-        _buttonsUI.OnClickPlayButton -= Continue;
+        //_buttonsUI.OnClickPauseButton -= PlayPause;
+       // _buttonsUI.OnClickPlayButton -= Continue;
+       _pauseService.RemovePauses(this);
     }
 
     public void Setup(ScoreUI scoreUI)
@@ -111,7 +114,7 @@ public class SpawnerEnemies : MonoBehaviour, IPauseble
 
     private void CreateRedEnemy()
     {
-        _createdRedEnemyHealth = _factory.CreateEnemyRed(_pointRedEnemy.transform.position);
+        _createdRedEnemyHealth = Instantiate(_factory.CreateEnemyRed(_pointRedEnemy.transform.position));
         _scoreUI.Setup(_createdRedEnemyHealth);
         _createdRedEnemyHealth.OnCreateBonusChange += () =>
         {

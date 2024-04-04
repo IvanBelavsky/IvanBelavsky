@@ -6,21 +6,21 @@ using Zenject;
 [RequireComponent(typeof(AudioSource))]
 public class AmmoBasic : MonoBehaviour, IPauseble
 {
-    [SerializeField]protected ButtonsUI _buttonsUI;
     [SerializeField] protected float _speed;
     [SerializeField] protected float _startSpeed;
     [SerializeField] protected float _damage;
     [SerializeField] protected bool _isPause;
     [SerializeField] private float _lifeTime;
 
+    private protected PauseService _pauseService;
     protected Rigidbody2D _rigidbody;
     private AudioSource _audioSource;
     private Destroyer _hitAnimation;
     
     [Inject]
-    public void Consctuctor(ButtonsUI buttonsUI)
+    public void Consctuctor(PauseService pauseService)
     {
-        _buttonsUI = buttonsUI;
+        _pauseService = pauseService;
     }
 
     private void Awake()
@@ -29,12 +29,7 @@ public class AmmoBasic : MonoBehaviour, IPauseble
         _audioSource = GetComponent<AudioSource>();
         _hitAnimation = Resources.Load<Destroyer>("Animations/Hit");
         _startSpeed = _speed;
-    }
-    
-    private void Start()
-    {
-        _buttonsUI.OnClickPauseButton += PlayPause;
-        _buttonsUI.OnClickPlayButton += Continue;
+        _pauseService.AddPauses(this);
     }
 
     private void Update()
@@ -45,8 +40,7 @@ public class AmmoBasic : MonoBehaviour, IPauseble
     
     private void OnDisable()
     {
-        _buttonsUI.OnClickPauseButton -= PlayPause;
-        _buttonsUI.OnClickPlayButton -= Continue;
+        _pauseService.RemovePauses(this);
     }
 
     public virtual void Move()

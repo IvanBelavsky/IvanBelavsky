@@ -106,7 +106,6 @@ public class EntryPoint : MonoBehaviour
         _createdPlayer = _diContainer
             .InstantiatePrefab(_player, _pointPlayer.transform.position, Quaternion.identity, null)
             .GetComponent<PlayerHealth>();
-        _createdPlayer.Constructor(_buttonsUI);
     }
     
     private void CreateParallax()

@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class AmmoPlayer : AmmoBasic
@@ -6,7 +7,7 @@ public class AmmoPlayer : AmmoBasic
     {
         Move();
     }
-
+    
     public override void Move()
     {
         _rigidbody.velocity = Vector2.up * _speed;

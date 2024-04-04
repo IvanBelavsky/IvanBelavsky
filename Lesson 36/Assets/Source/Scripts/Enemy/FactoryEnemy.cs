@@ -1,5 +1,6 @@
 using UnityEngine;
 using Zenject;
+using Zenject.ReflectionBaking.Mono.Cecil.Cil;
 
 public class FactoryEnemy : MonoBehaviour
 {
@@ -9,9 +10,9 @@ public class FactoryEnemy : MonoBehaviour
     private DiContainer _diContainer;
 
     [Inject]
-    public void Constructor(DiContainer bDiContainer)
+    public void Constructor(DiContainer diContainer)
     {
-        _diContainer = _diContainer;
+        _diContainer = diContainer;
     }
 
     private void Awake()
@@ -23,8 +24,8 @@ public class FactoryEnemy : MonoBehaviour
 
     public EnemyHealth CreateEnemyRed(Vector2 position)
     {
-        EnemyHealth redEnemyHealth =_diContainer
-            .InstantiatePrefab(_enemyHealthRed, position, Quaternion.Euler(0, 0, 180),null)
+        EnemyHealth redEnemyHealth = _diContainer
+            .InstantiatePrefab(_enemyHealthRed, position, Quaternion.Euler(0, 0, 180), null)
             .GetComponent<EnemyHealth>();
         return redEnemyHealth;
     }
@@ -32,7 +33,7 @@ public class FactoryEnemy : MonoBehaviour
     public EnemyHealth CreateEnemyGreen(Vector2 position)
     {
         EnemyHealth greenEnemyHealth = _diContainer
-            .InstantiatePrefab(_enemyHealthGreen, position, Quaternion.Euler(0, 0, 180),null)
+            .InstantiatePrefab(_enemyHealthGreen, position, Quaternion.Euler(0, 0, 180), null)
             .GetComponent<EnemyHealth>();
         return greenEnemyHealth;
     }
@@ -40,7 +41,7 @@ public class FactoryEnemy : MonoBehaviour
     public EnemyHealth CreateEnemyYellow(Vector2 position)
     {
         EnemyHealth yellowEnemyHealth = _diContainer
-            .InstantiatePrefab(_enemyHealthYellow, position, Quaternion.Euler(0, 0, 180),null)
+            .InstantiatePrefab(_enemyHealthYellow, position, Quaternion.Euler(0, 0, 180), null)
             .GetComponent<EnemyHealth>();
         return yellowEnemyHealth;
     }

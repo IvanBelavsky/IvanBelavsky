@@ -1,23 +1,15 @@
 using UnityEngine;
-using Zenject;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class EnemyMovement : MonoBehaviour, IPauseble
+public class EnemyMovement : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _startSpeed;
     [SerializeField] private float _offsetDistance;
 
     private Rigidbody2D _rigidbody;
-    private ButtonsUI _buttonsUI;
     private bool _isPause;
 
-    [Inject]
-    public void Constructor(ButtonsUI buttonsUI)
-    {
-        _buttonsUI = buttonsUI;
-    }
-    
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
@@ -27,19 +19,11 @@ public class EnemyMovement : MonoBehaviour, IPauseble
     private void Start()
     {
         _startSpeed = _speed;
-        _buttonsUI.OnClickPauseButton += PlayPause;
-        _buttonsUI.OnClickPlayButton += Continue;
     }
 
     private void Update()
     {
         Move();
-    }
-
-    private void OnDisable()
-    {
-        _buttonsUI.OnClickPauseButton -= PlayPause;
-        _buttonsUI.OnClickPlayButton -= Continue;
     }
 
     public void PlayPause()
