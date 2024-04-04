@@ -1,18 +1,34 @@
 using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 [RequireComponent(typeof(PlayerMovement))]
-public class PlayerHealth : MonoBehaviour, IDamageble
+[RequireComponent(typeof(PlayerAttack))]
+public class PlayerHealth : MonoBehaviour, IDamageble, IPauseble
 {
-    public Action OnHealthChange;
-    public Action OnTakeBonus;
+    public event Action OnHealthChange;
+    public event Action OnTakeBonus;
 
     [SerializeField] private bool _isDie;
     [SerializeField] private float _damage;
 
     private Destroyer _dieAnimation;
+    private ButtonsUI _buttonsUI;
+    private PauseService _pauseService;
 
+    [Inject]
+    public void Constructor(PauseService pauseService)
+    {
+        _pauseService = pauseService;
+    }
+    
+    [Inject]
+    public void Constructor(ButtonsUI buttonsUI)
+    {
+        _buttonsUI = buttonsUI;
+    }
+    
     [field: SerializeField] public float Health { get; private set; }
 
     private void Awake()
@@ -20,9 +36,20 @@ public class PlayerHealth : MonoBehaviour, IDamageble
         _dieAnimation = Resources.Load<Destroyer>("Animations/Destroy");
     }
 
+    private void OnEnable()
+    {
+        _pauseService.AddPauses(this);
+    }
+
+    private void Start()
+    {
+        _buttonsUI.OnClickPauseButton += PlayPause;
+        _buttonsUI.OnClickPlayButton += Continue;
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.TryGetComponent(out Enemy enemy))
+        if (other.gameObject.TryGetComponent(out EnemyHealth enemy))
         {
             enemy.TakeDamage(_damage);
         }
@@ -31,6 +58,13 @@ public class PlayerHealth : MonoBehaviour, IDamageble
         {
             OnTakeBonus?.Invoke();
         }
+    }
+
+    private void OnDisable()
+    {
+        _buttonsUI.OnClickPauseButton -= PlayPause;
+        _buttonsUI.OnClickPlayButton -= Continue;
+        _pauseService.RemovePauses(this);
     }
 
     public void TakeDamage(float damage)
@@ -45,6 +79,18 @@ public class PlayerHealth : MonoBehaviour, IDamageble
         {
             Die();
         }
+    }
+
+    public void PlayPause()
+    {
+        GetComponent<PlayerMovement>().PlayPause();
+        GetComponent<PlayerAttack>().PlayPause();
+    }
+
+    public void Continue()
+    {
+        GetComponent<PlayerMovement>().Continue();
+        GetComponent<PlayerAttack>().Continue();
     }
 
     private void DieAnimation()

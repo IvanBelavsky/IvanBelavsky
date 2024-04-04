@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using Zenject;
 
 [RequireComponent(typeof(FactoryEnemy))]
-public class SpawnerEnemies : MonoBehaviour
+public class SpawnerEnemies : MonoBehaviour, IPauseble
 {
     [Header("Start points position"), Space(5)] [SerializeField]
     private Transform _pointRedEnemy;
@@ -21,39 +23,58 @@ public class SpawnerEnemies : MonoBehaviour
     [SerializeField] private float _maxDelay;
     [SerializeField] private float _takeTimeBonus;
     [SerializeField] private float _delayRandomValue;
-
-    [Header("Bonus settings")] [SerializeField]
-    private int _chanceRed;
+    [SerializeField] private int _chanceRed;
     [SerializeField] private int _chanceGreen;
     [SerializeField] private int _chanceYellow;
 
     private FactoryEnemy _factory;
-    private FactoryBonus _spawnBonus;
+    private FactoryBonus _factoryBonus;
     private PlayerHealth _player;
-    private Enemy _createdRedEnemy;
-    private Enemy _createdYellowEnemy;
-    private Enemy _createdGreenEnemy;
-    private Score _score;
+    private EnemyHealth _createdRedEnemyHealth;
+    private EnemyHealth _createdYellowEnemyHealth;
+    private EnemyHealth _createdGreenEnemyHealth;
+    private ScoreUI _scoreUI;
     private Coroutine _spawnEnemiesTick;
     private Coroutine _randomValueChanceTick;
     private Coroutine _takeBonusTick;
+    private ButtonsUI _buttonsUI;
     private int _randomChance;
+    private bool _isPause;
 
+    [Inject]
+    public void Constructor(ButtonsUI buttonsUI)
+    {
+        _buttonsUI = buttonsUI;
+    } 
+    
     private void Awake()
     {
         _factory = GetComponent<FactoryEnemy>();
+    }
+
+    private void OnEnable()
+    {
+        _player.OnTakeBonus += TakeBonus;
+        _buttonsUI.OnClickPauseButton += PlayPause;
+        _buttonsUI.OnClickPlayButton += Continue;
     }
 
     private void Start()
     {
         _spawnEnemiesTick = StartCoroutine(SpawnEnemies());
         _randomValueChanceTick = StartCoroutine(RandomValueChanceTick());
-        _player.OnTakeBonus += TakeBonus;
     }
 
-    public void Setup(Score score)
+    private void OnDisable()
     {
-        _score = score;
+        _player.OnTakeBonus -= TakeBonus;
+        _buttonsUI.OnClickPauseButton -= PlayPause;
+        _buttonsUI.OnClickPlayButton -= Continue;
+    }
+
+    public void Setup(ScoreUI scoreUI)
+    {
+        _scoreUI = scoreUI;
     }
 
     public void Setup(PlayerHealth player)
@@ -63,45 +84,68 @@ public class SpawnerEnemies : MonoBehaviour
 
     public void Setup(FactoryBonus bonus)
     {
-        _spawnBonus = bonus;
+        _factoryBonus = bonus;
+    }
+
+    public void PlayPause()
+    {
+        _isPause = true;
+        if (_spawnEnemiesTick != null && _isPause)
+            StopCoroutine(_spawnEnemiesTick);
+        if (_randomValueChanceTick != null && _isPause)
+            StopCoroutine(_randomValueChanceTick);
+        if (_takeBonusTick != null && _isPause)
+            StopCoroutine(_takeBonusTick);
+    }
+
+    public void Continue()
+    {
+        _isPause = false;
+        if (!_isPause)
+        {
+            _spawnEnemiesTick = StartCoroutine(SpawnEnemies());
+            _randomValueChanceTick = StartCoroutine(RandomValueChanceTick());
+            _takeBonusTick = StartCoroutine(TakeBonusTick());
+        }
     }
 
     private void CreateRedEnemy()
     {
-        _createdRedEnemy = _factory.CreateEnemyRed(_pointRedEnemy.transform.position);
-        _score.Setup(_createdRedEnemy);
-        _createdRedEnemy.OnCreateBonusChange += () =>
+        _createdRedEnemyHealth = _factory.CreateEnemyRed(_pointRedEnemy.transform.position);
+        _scoreUI.Setup(_createdRedEnemyHealth);
+        _createdRedEnemyHealth.OnCreateBonusChange += () =>
         {
-            if (_createdRedEnemy != null && _randomChance == _chanceRed)
-                _spawnBonus.GetComponent<FactoryBonus>().CreateBonus(_createdRedEnemy.transform.position);
+            if (_createdRedEnemyHealth != null && _randomChance == _chanceRed)
+                _factoryBonus.CreateBonus(_createdRedEnemyHealth.transform.position);
         };
     }
 
     private void CreateGreenEnemy()
     {
-        _createdGreenEnemy = _factory.CreateEnemyGreen(_pointGreenEnemy.transform.position);
-        _score.Setup(_createdGreenEnemy);
-        _createdGreenEnemy.OnCreateBonusChange += () =>
+        _createdGreenEnemyHealth = _factory.CreateEnemyGreen(_pointGreenEnemy.transform.position);
+        _scoreUI.Setup(_createdGreenEnemyHealth);
+        _createdGreenEnemyHealth.OnCreateBonusChange += () =>
         {
-            if (_createdGreenEnemy != null && _randomChance == _chanceGreen)
-                _spawnBonus.GetComponent<FactoryBonus>().CreateBonus(_createdGreenEnemy.transform.position);
+            if (_createdGreenEnemyHealth != null && _randomChance == _chanceGreen)
+                _factoryBonus.CreateBonus(_createdGreenEnemyHealth.transform.position);
         };
     }
 
     private void CreateYellowEnemy()
     {
-        _createdYellowEnemy = _factory.CreateEnemyYellow(_pointYellowEnemy.transform.position);
-        _score.Setup(_createdYellowEnemy);
-        _createdYellowEnemy.OnCreateBonusChange += () =>
+        _createdYellowEnemyHealth = _factory.CreateEnemyYellow(_pointYellowEnemy.transform.position);
+        _scoreUI.Setup(_createdYellowEnemyHealth);
+        _createdYellowEnemyHealth.OnCreateBonusChange += () =>
         {
-            if (_createdYellowEnemy != null && _randomChance == _chanceYellow)
-                _spawnBonus.GetComponent<FactoryBonus>().CreateBonus(_createdYellowEnemy.transform.position);
+            if (_createdYellowEnemyHealth != null && _randomChance == _chanceYellow)
+                _factoryBonus.CreateBonus(_createdYellowEnemyHealth.transform.position);
         };
     }
 
     private void TakeBonus()
     {
-        _takeBonusTick = StartCoroutine(TakeBonusTick());
+        if (!_isPause)
+            _takeBonusTick = StartCoroutine(TakeBonusTick());
     }
 
     private IEnumerator SpawnEnemies()
@@ -127,7 +171,8 @@ public class SpawnerEnemies : MonoBehaviour
         if (_spawnEnemiesTick != null)
             StopCoroutine(_spawnEnemiesTick);
         yield return new WaitForSeconds(_takeTimeBonus);
-        _spawnEnemiesTick = StartCoroutine(SpawnEnemies());
+        if (!_isPause)
+            _spawnEnemiesTick = StartCoroutine(SpawnEnemies());
     }
 
     private IEnumerator RandomValueChanceTick()

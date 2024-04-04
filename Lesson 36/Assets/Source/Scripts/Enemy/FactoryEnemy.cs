@@ -1,30 +1,47 @@
 using UnityEngine;
+using Zenject;
 
 public class FactoryEnemy : MonoBehaviour
 {
-    private Enemy _enemyRed;
-    private Enemy _enemyGreen;
-    private Enemy _enemyYellow;
+    private EnemyHealth _enemyHealthRed;
+    private EnemyHealth _enemyHealthGreen;
+    private EnemyHealth _enemyHealthYellow;
+    private DiContainer _diContainer;
+
+    [Inject]
+    public void Constructor(DiContainer bDiContainer)
+    {
+        _diContainer = _diContainer;
+    }
 
     private void Awake()
     {
-        _enemyRed = Resources.Load<Enemy>("Enemies/RedEnemy");
-        _enemyGreen = Resources.Load<Enemy>("Enemies/GreenEnemy");
-        _enemyYellow = Resources.Load<Enemy>("Enemies/YellowEnemy");
+        _enemyHealthRed = Resources.Load<EnemyHealth>("Enemies/RedEnemy");
+        _enemyHealthGreen = Resources.Load<EnemyHealth>("Enemies/GreenEnemy");
+        _enemyHealthYellow = Resources.Load<EnemyHealth>("Enemies/YellowEnemy");
     }
 
-    public Enemy CreateEnemyRed(Vector2 position)
+    public EnemyHealth CreateEnemyRed(Vector2 position)
     {
-        return Instantiate(_enemyRed, position, Quaternion.Euler(0, 0, 180));
+        EnemyHealth redEnemyHealth =_diContainer
+            .InstantiatePrefab(_enemyHealthRed, position, Quaternion.Euler(0, 0, 180),null)
+            .GetComponent<EnemyHealth>();
+        return redEnemyHealth;
     }
 
-    public Enemy CreateEnemyGreen(Vector2 position)
+    public EnemyHealth CreateEnemyGreen(Vector2 position)
     {
-        return Instantiate(_enemyGreen, position, Quaternion.Euler(0, 0, 180));
+        EnemyHealth greenEnemyHealth = _diContainer
+            .InstantiatePrefab(_enemyHealthGreen, position, Quaternion.Euler(0, 0, 180),null)
+            .GetComponent<EnemyHealth>();
+        return greenEnemyHealth;
     }
 
-    public Enemy CreateEnemyYellow(Vector2 position)
+    public EnemyHealth CreateEnemyYellow(Vector2 position)
     {
-        return Instantiate(_enemyYellow, position, Quaternion.Euler(0, 0, 180));
+        EnemyHealth yellowEnemyHealth = _diContainer
+            .InstantiatePrefab(_enemyHealthYellow, position, Quaternion.Euler(0, 0, 180),null)
+            .GetComponent<EnemyHealth>();
+        return yellowEnemyHealth;
     }
 }

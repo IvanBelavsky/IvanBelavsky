@@ -131,8 +131,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 10
-  _minX: 1
-  _maxX: 1
+  _minX: -9
+  _maxX: 9
 --- !u!114 &6351543685059281066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,7 +236,7 @@ AudioSource:
   m_GameObject: {fileID: 5724380379082233064}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 24300002, guid: 5eb649588d8449944a18e5ae989b2dbe, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1

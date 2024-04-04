@@ -1,11 +1,13 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class HealthUI : MonoBehaviour
 {
     [SerializeField] private PlayerHealth _player;
+    [SerializeField] private Image[] _healthUI;
+    
     private TextMeshProUGUI _text;
-    private float _health;
 
     private void Awake()
     {
@@ -15,8 +17,6 @@ public class HealthUI : MonoBehaviour
     private void Start()
     {
         _player.OnHealthChange += HealthUpdate;
-        _health = _player.Health;
-        _text.text = "Health: " + _health;
     }
 
     private void OnDisable()
@@ -33,6 +33,16 @@ public class HealthUI : MonoBehaviour
 
     private void HealthUpdate()
     {
-        _text.text = "Health: " + _player.Health;
+        for (int i = 0; i < _healthUI.Length; i++)
+        {
+            if (i < _player.Health)
+            {
+                _healthUI[i].enabled = true;
+            }
+            else
+            {
+                _healthUI[i].enabled = false;
+            }
+        }
     }
 }

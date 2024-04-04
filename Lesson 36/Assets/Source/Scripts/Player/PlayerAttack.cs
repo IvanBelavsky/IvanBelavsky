@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Zenject;
 
 [RequireComponent(typeof(AudioSource))]
 public class PlayerAttack : MonoBehaviour
@@ -9,7 +10,15 @@ public class PlayerAttack : MonoBehaviour
     private AmmoPlayer _ammoPlayer;
     private AudioSource _audioSource;
     private Coroutine _spawnTick;
+    private DiContainer _diContainer;
     private bool _isCanAttack;
+    private bool _isPause;
+
+    [Inject]
+    public void Constructor(DiContainer diContainer)
+    {
+        _diContainer = diContainer;
+    }
 
     private void Awake()
     {
@@ -22,9 +31,19 @@ public class PlayerAttack : MonoBehaviour
         Attack();
     }
 
+    public void PlayPause()
+    {
+        _isPause = true;
+    }
+
+    public void Continue()
+    {
+        _isPause = false;
+    }
+
     private void Attack()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !_isCanAttack)
+        if (Input.GetKeyDown(KeyCode.Space) && !_isCanAttack && !_isPause)
         {
             _spawnTick = StartCoroutine(SpawnTick());
             AudioAttack();
@@ -41,7 +60,8 @@ public class PlayerAttack : MonoBehaviour
 
     private IEnumerator SpawnTick()
     {
-        Instantiate(_ammoPlayer, transform.position, Quaternion.identity);
+        _diContainer.InstantiatePrefab(_ammoPlayer, transform.position, Quaternion.identity, null)
+            .GetComponent<AmmoBasic>();
         yield return new WaitForSeconds(_delay);
         _isCanAttack = false;
     }

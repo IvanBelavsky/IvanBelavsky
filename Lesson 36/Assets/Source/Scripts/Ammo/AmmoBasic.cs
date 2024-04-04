@@ -1,37 +1,86 @@
 using UnityEngine;
+using UnityEngine.Audio;
+using Zenject;
 
 [RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(AudioSource))]
-public class AmmoBasic : MonoBehaviour
+public class AmmoBasic : MonoBehaviour, IPauseble
 {
+    [SerializeField]protected ButtonsUI _buttonsUI;
     [SerializeField] protected float _speed;
+    [SerializeField] protected float _startSpeed;
     [SerializeField] protected float _damage;
+    [SerializeField] protected bool _isPause;
     [SerializeField] private float _lifeTime;
 
     protected Rigidbody2D _rigidbody;
     private AudioSource _audioSource;
     private Destroyer _hitAnimation;
+    
+    [Inject]
+    public void Consctuctor(ButtonsUI buttonsUI)
+    {
+        _buttonsUI = buttonsUI;
+    }
 
     private void Awake()
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _audioSource = GetComponent<AudioSource>();
         _hitAnimation = Resources.Load<Destroyer>("Animations/Hit");
+        _startSpeed = _speed;
     }
-
+    
     private void Start()
     {
-        Destroy(gameObject, _lifeTime);
+        _buttonsUI.OnClickPauseButton += PlayPause;
+        _buttonsUI.OnClickPlayButton += Continue;
     }
 
     private void Update()
     {
         Move();
+        DieTime();
+    }
+    
+    private void OnDisable()
+    {
+        _buttonsUI.OnClickPauseButton -= PlayPause;
+        _buttonsUI.OnClickPlayButton -= Continue;
     }
 
     public virtual void Move()
     {
         _rigidbody.velocity = Vector2.up * _speed;
+    }
+
+    public void PlayPause()
+    {
+        _isPause = true;
+        if (_isPause)
+        {
+            _rigidbody.gravityScale = 0;
+            _speed = 0;
+            _rigidbody.GetComponent<Animator>().enabled = false;
+        }
+    }
+
+    public void Continue()
+    {
+        _isPause = false;
+        if (!_isPause)
+        {
+            _rigidbody.gravityScale = 1;
+            _speed = _startSpeed;
+            _rigidbody.GetComponent<Animator>().enabled = true;
+        }
+    }
+
+    protected void Die()
+    {
+        AudioHit();
+        HitAnimation();
+        Destroy(gameObject);
     }
 
     private void HitAnimation()
@@ -44,15 +93,15 @@ public class AmmoBasic : MonoBehaviour
         GameObject newAudio = new GameObject();
         newAudio.transform.position = transform.position;
         AudioSource audioSource = newAudio.AddComponent<AudioSource>();
+        audioSource.outputAudioMixerGroup = Resources.Load<AudioMixerGroup>("Audio/Master");
         audioSource.clip = Resources.Load<AudioClip>("Audio/Hit");
         audioSource.Play();
         Destroy(newAudio, 1);
     }
 
-    protected void Die()
+    private void DieTime()
     {
-        AudioHit();
-        HitAnimation();
-        Destroy(gameObject);
+        if (!_isPause)
+            Destroy(gameObject, _lifeTime);
     }
 }

@@ -5,7 +5,7 @@ public class WallGameOver : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.TryGetComponent(out Enemy enemy))
+        if (other.gameObject.TryGetComponent(out EnemyHealth enemy))
         {
             ReloadScene();
         }
