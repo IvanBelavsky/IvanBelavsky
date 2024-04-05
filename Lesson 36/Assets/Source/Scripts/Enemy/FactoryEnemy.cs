@@ -1,6 +1,5 @@
 using UnityEngine;
 using Zenject;
-using Zenject.ReflectionBaking.Mono.Cecil.Cil;
 
 public class FactoryEnemy : MonoBehaviour
 {
@@ -17,9 +16,9 @@ public class FactoryEnemy : MonoBehaviour
 
     private void Awake()
     {
-        _enemyHealthRed = Resources.Load<EnemyHealth>("Enemies/RedEnemy");
-        _enemyHealthGreen = Resources.Load<EnemyHealth>("Enemies/GreenEnemy");
-        _enemyHealthYellow = Resources.Load<EnemyHealth>("Enemies/YellowEnemy");
+        _enemyHealthRed = Resources.Load<EnemyHealth>(AssetsPath.Enemy.EnemyHealthRed);
+        _enemyHealthGreen = Resources.Load<EnemyHealth>(AssetsPath.Enemy.EnemyHealthGreen);
+        _enemyHealthYellow = Resources.Load<EnemyHealth>(AssetsPath.Enemy.EnemyHealthYellow);
     }
 
     public EnemyHealth CreateEnemyRed(Vector2 position)

@@ -1,23 +1,24 @@
 using UnityEngine;
+using Zenject;
 
 public class FactoryBonus : MonoBehaviour
 {
     private Bonus _bonus;
-    private ButtonsUI _buttonsUI;
+    private DiContainer _diContainer;
 
+    [Inject]
+    public void Constructor(DiContainer diContainer)
+    {
+        _diContainer = diContainer;
+    }
+    
     private void Awake()
     {
         _bonus = Resources.Load<Bonus>("Bonus/Bonus");
     }
 
-    public void Setup(ButtonsUI buttonsUI)
-    {
-        _buttonsUI = buttonsUI;
-    }
-
     public void CreateBonus(Vector2 position)
     {
-        Bonus bonus = Instantiate(_bonus, position, Quaternion.identity);
-        bonus.Setup(_buttonsUI);
+       _diContainer.InstantiatePrefab(_bonus, position, Quaternion.identity, null).GetComponent<Bonus>();
     }
 }

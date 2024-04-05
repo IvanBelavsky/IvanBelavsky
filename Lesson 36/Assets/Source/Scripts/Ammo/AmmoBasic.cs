@@ -27,7 +27,7 @@ public class AmmoBasic : MonoBehaviour, IPauseble
     {
         _rigidbody = GetComponent<Rigidbody2D>();
         _audioSource = GetComponent<AudioSource>();
-        _hitAnimation = Resources.Load<Destroyer>("Animations/Hit");
+        _hitAnimation = Resources.Load<Destroyer>(AssetsPath.Animation.Hit);
         _startSpeed = _speed;
         _pauseService.AddPauses(this);
     }
@@ -87,8 +87,8 @@ public class AmmoBasic : MonoBehaviour, IPauseble
         GameObject newAudio = new GameObject();
         newAudio.transform.position = transform.position;
         AudioSource audioSource = newAudio.AddComponent<AudioSource>();
-        audioSource.outputAudioMixerGroup = Resources.Load<AudioMixerGroup>("Audio/Master");
-        audioSource.clip = Resources.Load<AudioClip>("Audio/Hit");
+        audioSource.outputAudioMixerGroup = Resources.Load<AudioMixerGroup>(AssetsPath.Audio.AudioMixer);
+        audioSource.clip = Resources.Load<AudioClip>(AssetsPath.Audio.Hit);
         audioSource.Play();
         Destroy(newAudio, 1);
     }

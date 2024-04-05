@@ -1,5 +1,5 @@
-using System;
 using UnityEngine;
+using Zenject;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Bonus : MonoBehaviour, IPauseble
@@ -8,9 +8,15 @@ public class Bonus : MonoBehaviour, IPauseble
     [SerializeField] private float _lifeTime;
 
     private Rigidbody2D _rigidbody;
-    private ButtonsUI _buttonsUI;
     private Vector2 _velocity;
+    private PauseService _pauseService;
     private bool _isPause;
+
+    [Inject]
+    public void Constructor(PauseService pauseService)
+    {
+        _pauseService = pauseService;
+    }
 
     private void Awake()
     {
@@ -19,11 +25,14 @@ public class Bonus : MonoBehaviour, IPauseble
         _rigidbody.velocity = _velocity;
     }
 
+    private void OnEnable()
+    {
+        _pauseService.AddPauses(this);
+    }
+
     private void Start()
     {
         Destroy(gameObject, _lifeTime);
-        _buttonsUI.OnClickPauseButton += PlayPause;
-        _buttonsUI.OnClickPlayButton += Continue;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -36,15 +45,9 @@ public class Bonus : MonoBehaviour, IPauseble
 
     private void OnDisable()
     {
-        _buttonsUI.OnClickPauseButton -= PlayPause;
-        _buttonsUI.OnClickPlayButton -= Continue;
+        _pauseService.RemovePauses(this);
     }
 
-    public void Setup(ButtonsUI buttonsUI)
-    {
-        _buttonsUI = buttonsUI;
-    }
-    
     public void PlayPause()
     {
         _isPause = true;
@@ -66,5 +69,4 @@ public class Bonus : MonoBehaviour, IPauseble
             _rigidbody.GetComponent<Animator>().enabled = true;
         }
     }
-    
 }

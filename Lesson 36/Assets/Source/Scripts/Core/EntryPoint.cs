@@ -4,11 +4,11 @@ using Zenject;
 
 [RequireComponent(typeof(SpawnerEnemies))]
 [RequireComponent(typeof(FactoryBonus))]
-//[RequireComponent(typeof(ButtonsUI))]
 public class EntryPoint : MonoBehaviour
 {
-    [Header("Start points position"), Space(5)] 
-    [SerializeField] private Transform _pointPlayer;
+    [Header("Start points position"), Space(5)] [SerializeField]
+    private Transform _pointPlayer;
+
     [SerializeField] private Transform _pointParallax;
 
     [SerializeField] private RectTransform _pointScoreUI;
@@ -44,18 +44,17 @@ public class EntryPoint : MonoBehaviour
     {
         _buttonsUI = buttonsUI;
     }
-    
+
     private void Awake()
     {
         _spawnEnemy = GetComponent<SpawnerEnemies>();
         _factoryBonus = GetComponent<FactoryBonus>();
-       // _buttonsUI = GetComponent<ButtonsUI>();
-        _player = Resources.Load<PlayerHealth>("Player/Player");
-        _scoreUI = Resources.Load<ScoreUI>("UI/Score");
-        _healthUI = Resources.Load<HealthUI>("UI/Health");
-        _pauseButton = Resources.Load<Button>("UI/PauseButton");
-        _playButton = Resources.Load<Button>("UI/PlayButton");
-        _parallax = Resources.Load<Parallax>("UI/Parallax");
+        _player = Resources.Load<PlayerHealth>(AssetsPath.Player.PlayerHealth);
+        _scoreUI = Resources.Load<ScoreUI>(AssetsPath.UI.Score);
+        _healthUI = Resources.Load<HealthUI>(AssetsPath.UI.Health);
+        _pauseButton = Resources.Load<Button>(AssetsPath.UI.PauseButton);
+        _playButton = Resources.Load<Button>(AssetsPath.UI.PlayButton);
+        _parallax = Resources.Load<Parallax>(AssetsPath.UI.Parallax);
     }
 
     private void OnEnable()
@@ -67,11 +66,9 @@ public class EntryPoint : MonoBehaviour
         CreatedPlayButtonUI();
         CreateParallax();
         _buttonsUI.Setup(_createdPauseButton, _createdPlayButton);
-        //_spawnEnemy.Setup(_buttonsUI);
         _spawnEnemy.Setup(_createdPlayer);
         _spawnEnemy.Setup(_createdScoreUI);
         _spawnEnemy.Setup(_factoryBonus);
-        _factoryBonus.Setup(_buttonsUI);
     }
 
     private void CreateScoreUI()
@@ -107,10 +104,11 @@ public class EntryPoint : MonoBehaviour
             .InstantiatePrefab(_player, _pointPlayer.transform.position, Quaternion.identity, null)
             .GetComponent<PlayerHealth>();
     }
-    
+
     private void CreateParallax()
     {
-        _createdParallax = Instantiate(_parallax, _pointParallax.transform.position, Quaternion.identity);
-        _createdParallax.Setup(_buttonsUI);
+        _createdParallax = _diContainer
+            .InstantiatePrefab(_parallax, _pointParallax.transform.position, Quaternion.identity, null)
+            .GetComponent<Parallax>();
     }
 }

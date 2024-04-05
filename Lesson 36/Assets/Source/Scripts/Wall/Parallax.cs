@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using Zenject;
 
 public class Parallax : MonoBehaviour, IPauseble
 {
@@ -8,13 +9,22 @@ public class Parallax : MonoBehaviour, IPauseble
     [SerializeField] private float _speed;
     [SerializeField] private float _startSpeed;
 
-    private ButtonsUI _buttons;
+    private PauseService _pauseService;
+
+    [Inject]
+    public void Constructor(PauseService pauseService)
+    {
+        _pauseService = pauseService;
+    }
+
+    private void OnEnable()
+    {
+        _pauseService.AddPauses(this);
+    }
 
     private void Start()
     {
         _startSpeed = _speed;
-        _buttons.OnClickPauseButton += PlayPause;
-        _buttons.OnClickPlayButton += Continue;
     }
 
     private void Update()
@@ -24,15 +34,9 @@ public class Parallax : MonoBehaviour, IPauseble
 
     private void OnDisable()
     {
-        _buttons.OnClickPauseButton -= PlayPause;
-        _buttons.OnClickPlayButton -= Continue;
+        _pauseService.RemovePauses(this);
     }
 
-    public void Setup(ButtonsUI buttonsUI)
-    {
-        _buttons = buttonsUI;
-    }
-    
     public void PlayPause()
     {
         _speed = 0;
@@ -42,7 +46,7 @@ public class Parallax : MonoBehaviour, IPauseble
     {
         _speed = _startPosition;
     }
-    
+
     private void Move()
     {
         transform.Translate(Vector2.down * _speed * Time.deltaTime);

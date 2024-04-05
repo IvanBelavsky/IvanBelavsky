@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Zenject;
 
@@ -37,7 +38,7 @@ public class PauseService : MonoBehaviour
 
     private void Pause()
     {
-        foreach (IPauseble pause in _pauses)
+        foreach (IPauseble pause in _pauses.ToList())
         {
             pause.PlayPause();
         }
@@ -45,10 +46,9 @@ public class PauseService : MonoBehaviour
     
     private void Continue()
     {
-        foreach (IPauseble pause in _pauses)
+        foreach (IPauseble pause in _pauses.ToList())
         {
             pause.Continue();
         }
     }
-    
 }

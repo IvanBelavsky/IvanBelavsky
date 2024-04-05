@@ -1,8 +1,6 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using Zenject;
-using Random = UnityEngine.Random;
 
 public class EnemyShoot : MonoBehaviour
 {
@@ -24,7 +22,7 @@ public class EnemyShoot : MonoBehaviour
 
     private void Awake()
     {
-        _ammo = Resources.Load<EnemyAmmo>("Ammo/EnemyAmmo");
+        _ammo = Resources.Load<EnemyAmmo>(AssetsPath.Ammo.EnemyAmmo);
     }
 
 
@@ -56,8 +54,12 @@ public class EnemyShoot : MonoBehaviour
             yield return new WaitForSeconds(_shootTime);
             if (_shootTime <= 0)
             {
-                _diContainer.InstantiatePrefab(_ammo, transform.position, Quaternion.Euler(0, 0, 180), null)
-                    .GetComponent<AmmoBasic>();
+                var ammoInstance = _diContainer.InstantiatePrefab(_ammo, transform.position, Quaternion.Euler(0, 0, 180), null);
+                if (ammoInstance != null)
+                {
+                    ammoInstance.GetComponent<AmmoBasic>();
+                }
+
                 _shootTime = Random.Range(_shootMin, _shootMax);
             }
         }

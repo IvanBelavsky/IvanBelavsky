@@ -26,7 +26,7 @@ public class PlayerHealth : MonoBehaviour, IDamageble, IPauseble
 
     private void Awake()
     {
-        _dieAnimation = Resources.Load<Destroyer>("Animations/Destroy");
+        _dieAnimation = Resources.Load<Destroyer>(AssetsPath.Animation.Destroy);
     }
 
     private void OnEnable()
