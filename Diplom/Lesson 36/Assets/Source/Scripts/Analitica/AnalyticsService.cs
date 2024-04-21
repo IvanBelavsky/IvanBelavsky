@@ -7,8 +7,7 @@ public class AnalyticsService : MonoBehaviour
     {
         AppMetrica.Instance.RequestTrackingAuthorization(status => { });
     }
-
-
+    
     public void TrackEvent(string eventName)
     {
         AppMetrica.Instance.ReportEvent(eventName);

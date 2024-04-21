@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using Zenject;
 
+[RequireComponent(typeof(FactoryAmmo))]
 public class EnemyShoot : MonoBehaviour
 {
     [SerializeField] private float _shootTime;
@@ -9,6 +10,7 @@ public class EnemyShoot : MonoBehaviour
     [SerializeField] private float _shootMax;
 
     private EnemyAmmo _ammo;
+    private FactoryAmmo _factoryAmmo;
     private Coroutine _shootTick;
     private GameBehaviourUI _gameBehaviourUI;
     private DiContainer _diContainer;
@@ -22,6 +24,7 @@ public class EnemyShoot : MonoBehaviour
 
     private void Awake()
     {
+        _factoryAmmo = GetComponent<FactoryAmmo>();
         _ammo = Resources.Load<EnemyAmmo>(AssetsPath.Ammo.EnemyAmmo);
     }
 
@@ -54,7 +57,7 @@ public class EnemyShoot : MonoBehaviour
             yield return new WaitForSeconds(_shootTime);
             if (_shootTime <= 0)
             {
-                var ammoInstance = _diContainer.InstantiatePrefab(_ammo, transform.position, Quaternion.Euler(0, 0, 180), null);
+                var ammoInstance = _factoryAmmo.CreatedEnemyAmmo(transform.position);
                 if (ammoInstance != null)
                 {
                     ammoInstance.GetComponent<AmmoBasic>();

@@ -17,8 +17,8 @@ public class FactoryBonus : MonoBehaviour
         _bonus = Resources.Load<Bonus>("Bonus/Bonus");
     }
 
-    public void CreateBonus(Vector2 position)
+    public Bonus CreateBonus(Vector2 position)
     {
-       _diContainer.InstantiatePrefab(_bonus, position, Quaternion.identity, null).GetComponent<Bonus>();
+       return _diContainer.InstantiatePrefab(_bonus, position, Quaternion.identity, null).GetComponent<Bonus>();
     }
 }

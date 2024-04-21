@@ -5,10 +5,10 @@ using Zenject;
 [RequireComponent(typeof(FactoryEnemy))]
 public class SpawnerEnemies : MonoBehaviour, IPauseble
 {
-    [Header("Start points position"), Space(5)]
-    [SerializeField] private Transform _pointRedEnemy;
-    [SerializeField] private Transform _pointGreenEnemy;
-    [SerializeField] private Transform _pointYellowEnemy;
+    [Header("Start points position"), Space(5)] 
+    [SerializeField] private Transform _pointFirstEnemy;
+    [SerializeField] private Transform _pointSecondEnemy;
+    [SerializeField] private Transform _pointThreeEnemy;
 
     [Header("Options"), Space(5)] [SerializeField]
     private int _minRows;
@@ -40,18 +40,18 @@ public class SpawnerEnemies : MonoBehaviour, IPauseble
     private bool _isPause;
 
     [Inject]
-    public void Constructor(PauseService pauseService, PlayerHealth player,FactoryBonus factoryBonus)
+    public void Constructor(PauseService pauseService, PlayerHealth player, FactoryBonus factoryBonus)
     {
         _pauseService = pauseService;
         _player = player;
         _factoryBonus = factoryBonus;
     }
-    
+
     public void Setup(ScoreUI scoreUI)
     {
         _scoreUI = scoreUI;
     }
-    
+
     private void Awake()
     {
         _factory = GetComponent<FactoryEnemy>();
@@ -72,7 +72,7 @@ public class SpawnerEnemies : MonoBehaviour, IPauseble
     private void OnDisable()
     {
         _player.OnTakeBonus -= TakeBonus;
-       _pauseService.RemovePauses(this);
+        _pauseService.RemovePauses(this);
     }
 
     public void PlayPause()
@@ -97,36 +97,14 @@ public class SpawnerEnemies : MonoBehaviour, IPauseble
         }
     }
 
-    private void CreateRedEnemy()
+    private void CreateEnemies(Vector2 position)
     {
-        _createdRedEnemyHealth =_factory.CreateEnemyRed(_pointRedEnemy.transform.position);
+        _createdRedEnemyHealth = _factory.CreateEnemyRed(position);
         _scoreUI.AddEnemy(_createdRedEnemyHealth);
         _createdRedEnemyHealth.OnCreateBonusChange += () =>
         {
             if (_createdRedEnemyHealth != null && _randomChance == _chanceRed)
                 _factoryBonus.CreateBonus(_createdRedEnemyHealth.transform.position);
-        };
-    }
-
-    private void CreateGreenEnemy()
-    {
-        _createdGreenEnemyHealth = _factory.CreateEnemyGreen(_pointGreenEnemy.transform.position);
-        _scoreUI.AddEnemy(_createdGreenEnemyHealth);
-        _createdGreenEnemyHealth.OnCreateBonusChange += () =>
-        {
-            if (_createdGreenEnemyHealth != null && _randomChance == _chanceGreen)
-                _factoryBonus.CreateBonus(_createdGreenEnemyHealth.transform.position);
-        };
-    }
-
-    private void CreateYellowEnemy()
-    {
-        _createdYellowEnemyHealth = _factory.CreateEnemyYellow(_pointYellowEnemy.transform.position);
-        _scoreUI.AddEnemy(_createdYellowEnemyHealth);
-        _createdYellowEnemyHealth.OnCreateBonusChange += () =>
-        {
-            if (_createdYellowEnemyHealth != null && _randomChance == _chanceYellow)
-                _factoryBonus.CreateBonus(_createdYellowEnemyHealth.transform.position);
         };
     }
 
@@ -144,9 +122,10 @@ public class SpawnerEnemies : MonoBehaviour, IPauseble
             float randomDelay = UnityEngine.Random.Range(_minDelay, _maxDelay);
             for (int i = 0; i < randomRowCount; i++)
             {
-                CreateRedEnemy();
-                CreateGreenEnemy();
-                CreateYellowEnemy();
+                CreateEnemies(_pointFirstEnemy.transform.position);
+                CreateEnemies(_pointSecondEnemy.transform.position);
+                CreateEnemies(_pointThreeEnemy.transform.position);
+
                 yield return new WaitForSeconds(_distanceRows);
             }
 

@@ -1,28 +1,74 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using Zenject;
 
+[RequireComponent(typeof(FactoryEnemy))]
+[RequireComponent(typeof(FactoryAmmo))]
+[RequireComponent(typeof(FactoryBonus))]
 public class SaveService : MonoBehaviour
 {
-    public Action OnSave;
+    public event Action OnSave;
 
     private List<ISavePositionble> _position = new List<ISavePositionble>();
+    private List<ISavePositionble> _saveDatas = new List<ISavePositionble>();
+    private FactoryEnemy _factoryEnemy;
+    private FactoryAmmo _factoryAmmo;
+    private FactoryBonus _factoryBonus;
+    private ScoreUI _scoreUI;
+    private HealthUI _healthUI;
+    private LoadingServicGame _loadingServic;
+    private PlayerHealth _playerHealth;
     private string _filePath;
 
+    [Inject]
+    public void Constructor(LoadingServicGame loadingServicGame)
+    {
+        _loadingServic = loadingServicGame;
+    }
+
+    public void Setup(ScoreUI scoreUI)
+    {
+        _scoreUI = scoreUI;
+    }
+
+    public void Setup(HealthUI healthUI)
+    {
+        _healthUI = healthUI;
+    }
+
+    public void Setup(PlayerHealth playerHealth)
+    {
+        _playerHealth = playerHealth;
+    }
+
+    [field: SerializeField] public bool IsLoad { get; private set; }
     public FileSaveData CurrentSaveData { get; private set; }
 
     private void Awake()
     {
+        _factoryEnemy = GetComponent<FactoryEnemy>();
+        _factoryAmmo = GetComponent<FactoryAmmo>();
+        _factoryBonus = GetComponent<FactoryBonus>();
         _filePath = Application.persistentDataPath + "/SaveData.data";
 
         if (IsFileExist())
             CurrentSaveData = Load();
         else
             CurrentSaveData = new FileSaveData();
+    }
+
+    private void Start()
+    {
+        if (_loadingServic.IsLoad)
+        {
+            LoadPosition();
+            _loadingServic.Loaouding(false);
+        }
+        else
+            ClearSaveData();
     }
 
     public void AddPosition(ISavePositionble savePosition)
@@ -35,26 +81,91 @@ public class SaveService : MonoBehaviour
         _position.Remove(position);
     }
 
-    public void SavePosition()
+    public void SaveObjects()
     {
-        foreach (ISavePositionble position in _position.ToList())
+        ClearSaveData();
+        _scoreUI.SaveScore();
+        _healthUI.SaveHealth();
+        foreach (ISavePositionble saveData in _position)
         {
-            position.SavePosition();
+            saveData.SavePosition();
+            Debug.Log(saveData);
         }
+        IsLoad = true;
+        _loadingServic.Loaouding(true);
     }
 
-    private void LoadPosition()
+    public void LoadPosition()
     {
-        foreach (ISavePositionble position in _position.ToList())
+        Dictionary<string, SaveDatas> bufferData = new Dictionary<string, SaveDatas>(CurrentSaveData.Datas);
+        foreach (SaveDatas saveDatas in bufferData.Values)
         {
-            position.LoadPosition();
-        }
-    }
+            if (saveDatas.Type == typeof(EnemyHealth))
+            {
+                EnemySaveData enemySaveData = (EnemySaveData)saveDatas;
+                EnemyHealth enemyHealth = _factoryEnemy.CreateEnemyRed(enemySaveData.EnemyPosition.Vector())
+                    .GetComponent<EnemyHealth>();
+                enemyHealth.Setup(saveDatas.Id);
+                enemyHealth.LoadPosition();
+                if (_scoreUI != null)
+                    _scoreUI.AddEnemy(enemyHealth);
+            }
 
-    public void LoadSceneWithSavedPositions(string sceneName)
-    {
-        SceneManager.LoadScene(sceneName);
-        LoadPosition();
+            if (saveDatas.Type == typeof(AmmoBasic))
+            {
+                AmmoSaveData ammoSaveData = (AmmoSaveData)saveDatas;
+                AmmoBasic ammo;
+                if (ammoSaveData.AmmoType == AmmoType.playerType)
+                {
+                    ammo = _factoryAmmo.CreatedPlayerAmmo(ammoSaveData.Position.Vector())
+                        .GetComponent<AmmoPlayer>();
+                }
+                else
+                {
+                    ammo = _factoryAmmo.CreatedEnemyAmmo(ammoSaveData.Position.Vector())
+                        .GetComponent<EnemyAmmo>();
+                }
+
+                ammo.Setup(saveDatas.Id);
+                ammo.LoadPosition();
+            }
+
+            if (saveDatas.Type == typeof(ScoreUI))
+            {
+                if (_scoreUI != null)
+                {
+                    _scoreUI.Setup(saveDatas.Id);
+                    _scoreUI.LoadScore();
+                }
+            }
+
+            if (saveDatas.Type == typeof(HealthUI))
+            {
+                if (_healthUI != null)
+                {
+                    _healthUI.Setup(saveDatas.Id);
+                    _healthUI.LoadHealth();
+                }
+            }
+
+            if (saveDatas.Type == typeof(PlayerHealth))
+            {
+                if (_playerHealth != null)
+                {
+                    _playerHealth.Setup(saveDatas.Id);
+                    _playerHealth.LoadPosition();
+                }
+            }
+
+            if (saveDatas.Type == typeof(Bonus))
+            {
+                BonusSaveData ammoSaveData = (BonusSaveData)saveDatas;
+                Bonus bonus = _factoryBonus.CreateBonus(ammoSaveData.BonusPosition.Vector()).GetComponent<Bonus>();
+                bonus.Setup(saveDatas.Id);
+                bonus.LoadPosition();
+            }
+        }
+        IsLoad = false;
     }
 
     public void Save()
@@ -85,6 +196,10 @@ public class SaveService : MonoBehaviour
         return returnObj;
     }
 
+    public void ClearSaveData()
+    {
+        CurrentSaveData.ClearData();
+    }
 
     public bool IsFileExist()
     {
@@ -148,6 +263,11 @@ public class FileSaveData : SaveDatas
                 Datas.Remove(id);
             }
         }
+    }
+
+    public void ClearData()
+    {
+        Datas.Clear();
     }
 }
 

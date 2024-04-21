@@ -22,12 +22,9 @@ public class ScoreUI : MonoBehaviour
         _analyticsService = analyticsService;
     }
 
-    public void AddEnemy(EnemyHealth enemyHealth)
+    public void Setup(string id)
     {
-        if (_enemyHealth != null)
-            _enemyHealth.OnScoreChange += AddScore;
-
-        _enemyHealth = enemyHealth;
+        ID = id;
     }
 
     [field: SerializeField] public string ID = "ScoreVolue";
@@ -36,6 +33,7 @@ public class ScoreUI : MonoBehaviour
     {
         _text = GetComponent<TextMeshProUGUI>();
         _textTranslate = GetComponent<TextTranslate>();
+        _saveService.Setup(this);
     }
 
     private void Start()
@@ -47,29 +45,29 @@ public class ScoreUI : MonoBehaviour
         LoadScore();
     }
 
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            SaveScore();
-        }
-    }
-
     private void OnDisable()
     {
         if (_enemyHealth != null)
             _enemyHealth.OnScoreChange -= AddScore;
         _mainMenu.OnClickMainMenuButton -= SaveScore;
     }
+    
+    public void AddEnemy(EnemyHealth enemyHealth)
+    {
+        if (_enemyHealth != null)
+            _enemyHealth.OnScoreChange += AddScore;
 
-    private void SaveScore()
+        _enemyHealth = enemyHealth;
+    }
+    
+    public void SaveScore()
     {
         _saveService.CurrentSaveData.AddData(ID, new ScoreSaveData(_score, ID, typeof(ScoreUI)));
         _saveService.Save();
         Debug.Log("Save");
     }
-
-    private void LoadScore()
+    
+    public void LoadScore()
     {
         if (_saveService.CurrentSaveData.TryGetData<ScoreSaveData>(ID, out ScoreSaveData scoreSaveData))
         {

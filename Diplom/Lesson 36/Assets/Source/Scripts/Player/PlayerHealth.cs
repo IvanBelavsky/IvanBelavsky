@@ -24,6 +24,11 @@ public class PlayerHealth : MonoBehaviour, IDamageble, IPauseble, ISavePositionb
         _sceneService = sceneService;
         _saveService = saveService;
     }
+    
+    public void Setup(string id)
+    {
+        ID = id;
+    }
 
     [field: SerializeField] public float Health { get; private set; }
     [field: SerializeField] public string ID = "PlayerPosition";
@@ -37,6 +42,7 @@ public class PlayerHealth : MonoBehaviour, IDamageble, IPauseble, ISavePositionb
     {
         _pauseService.AddPauses(this);
         _saveService.AddPosition(this);
+        _saveService.Setup(this);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -56,6 +62,11 @@ public class PlayerHealth : MonoBehaviour, IDamageble, IPauseble, ISavePositionb
     {
         _pauseService.RemovePauses(this);
         _saveService.RemovePosition(this);
+    }
+    
+    public void SetHealth(float health)
+    {
+        Health = health;
     }
 
     public void TakeDamage(float damage)

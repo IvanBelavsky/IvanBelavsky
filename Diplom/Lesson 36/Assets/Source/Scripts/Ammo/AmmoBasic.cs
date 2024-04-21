@@ -20,12 +20,18 @@ public class AmmoBasic : MonoBehaviour, IPauseble, ISavePositionble
     protected Rigidbody2D _rigidbody;
     private AudioSource _audioSource;
     private Destroyer _hitAnimation;
+    private AmmoType _ammoType;
 
     [Inject]
     public void Consctuctor(PauseService pauseService, SaveService saveService)
     {
         _pauseService = pauseService;
         _saveService = saveService;
+    }
+    
+    public void Setup(string id)
+    {
+        ID = id;
     }
     
     [field: SerializeField] protected string ID { get; private set; }
@@ -87,23 +93,34 @@ public class AmmoBasic : MonoBehaviour, IPauseble, ISavePositionble
     
     public void SavePosition()
     {
-        _saveService.CurrentSaveData.AddData(ID, new AmmoSaveData(transform.position, ID, typeof(AmmoBasic)));
+        _saveService.CurrentSaveData.AddData(ID, new AmmoSaveData(transform.position, ID, _ammoType));
         _saveService.Save();
         Debug.Log("SavePosition");
     }
 
     public void LoadPosition()
     {
-        if (_saveService.CurrentSaveData.TryGetData<AmmoSaveData>(ID, out AmmoSaveData enemySaveData))
+        if (_saveService.CurrentSaveData.TryGetData<AmmoSaveData>(ID, out AmmoSaveData ammoSaveData))
         {
             if (_ammoPositions.ContainsKey(ID))
             {
                 AmmoBasic ammoInstance = _ammoPositions[ID];
-                ammoInstance.transform.position = enemySaveData.PlayerPosition.Vector();
+                ammoInstance.transform.position = ammoSaveData.Position.Vector();
+                ammoInstance._ammoType = ammoSaveData.AmmoType;
             }
         }
 
         Debug.Log("LoadPosition");
+    }
+
+    protected void SetType(AmmoType ammoType)
+    {
+        _ammoType = ammoType;
+    }
+    
+    protected void SetID()
+    {
+        ID = UnityEngine.Random.Range(0, 100000).ToString();
     }
 
     protected void Die()
@@ -140,10 +157,18 @@ public class AmmoBasic : MonoBehaviour, IPauseble, ISavePositionble
 [Serializable]
 public class AmmoSaveData : SaveDatas
 {
-    public AmmoSaveData(Vector3 position, string id, Type type) : base(id, type)
+    public AmmoSaveData(Vector3 position, string id, AmmoType ammoType) : base(id, typeof(AmmoBasic))
     {
-        PlayerPosition = new VectorSerializable(position);
+        Position = new VectorSerializable(position);
+        AmmoType = ammoType;
     }
 
-    public VectorSerializable PlayerPosition { get; private set; }
+    public VectorSerializable Position { get; private set; }
+    public AmmoType AmmoType { get; private set; }
+}
+
+public enum AmmoType
+{
+    playerType = 0,
+    enemyType = 1
 }

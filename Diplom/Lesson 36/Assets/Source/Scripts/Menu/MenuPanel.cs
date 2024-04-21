@@ -1,6 +1,4 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
@@ -16,12 +14,14 @@ public class MenuPanel : MonoBehaviour
 
     private SceneService _sceneService;
     private SaveService _saveService;
+    private LoadingServicGame _loadingServic;
 
     [Inject]
-    public void Constructor(SceneService sceneService, SaveService saveService)
+    public void Constructor(SceneService sceneService, SaveService saveService, LoadingServicGame loadingServicGame)
     {
         _sceneService = sceneService;
         _saveService = saveService;
+        _loadingServic = loadingServicGame;
     }
 
     private void Awake()
@@ -44,6 +44,7 @@ public class MenuPanel : MonoBehaviour
 
     private void Play()
     {
+        _loadingServic.Loaouding(false);
         _sceneService.LoadScene("SampleScene");
     }
 
@@ -67,6 +68,8 @@ public class MenuPanel : MonoBehaviour
 
     private void Continue()
     {
-        _saveService.LoadSceneWithSavedPositions("SampleScene");
+        _loadingServic.Loaouding(true);
+        _saveService.LoadPosition();
+        _sceneService.LoadScene("SampleScene");
     }
 }

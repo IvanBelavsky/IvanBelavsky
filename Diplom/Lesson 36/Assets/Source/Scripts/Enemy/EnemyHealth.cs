@@ -13,9 +13,11 @@ public class EnemyHealth : MonoBehaviour, IDamageble, IPauseble, ISavePositionbl
     [SerializeField] private float _health;
     [SerializeField] private float _damage;
     [SerializeField] private bool _isDie;
+    [SerializeField] private List<Sprite> _sprites = new List<Sprite>();
 
     private PauseService _pauseService;
     private SaveService _saveService;
+    private SpriteRenderer _spriteRenderer;
     private bool _isPause;
     
     private Dictionary<string, EnemyHealth> _enemyPositions = new Dictionary<string, EnemyHealth>();
@@ -27,11 +29,17 @@ public class EnemyHealth : MonoBehaviour, IDamageble, IPauseble, ISavePositionbl
         _saveService = saveService;
     }
 
+    public void Setup(string id)
+    {
+        ID = id;
+    }
+
     [field: SerializeField] public string ID { get; private set; }
 
     private void Awake()
     {
-        ID = UnityEngine.Random.Range(0, 100000).ToString();
+        SetID();
+        _spriteRenderer = GetComponent<SpriteRenderer>();
         _enemyPositions[ID] = this;
     }
 
@@ -41,10 +49,9 @@ public class EnemyHealth : MonoBehaviour, IDamageble, IPauseble, ISavePositionbl
         _saveService.AddPosition(this);
     }
 
-    private void OnDisable()
+    private void Start()
     {
-        _pauseService.RemovePauses(this);
-        _saveService.RemovePosition(this);
+        RandomSprite();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -53,6 +60,17 @@ public class EnemyHealth : MonoBehaviour, IDamageble, IPauseble, ISavePositionbl
         {
             player.TakeDamage(_damage);
         }
+    }
+    
+    private void OnDisable()
+    {
+        _pauseService.RemovePauses(this);
+        _saveService.RemovePosition(this);
+    }
+
+    private void OnDestroy()
+    {
+        _saveService.CurrentSaveData.RemoveData(ID);
     }
 
     public void TakeDamage(float damage)
@@ -95,10 +113,21 @@ public class EnemyHealth : MonoBehaviour, IDamageble, IPauseble, ISavePositionbl
             {
                 EnemyHealth enemyInstance = _enemyPositions[ID];
                 enemyInstance.transform.position = enemySaveData.EnemyPosition.Vector();
+                _pauseService.AddPauses(enemyInstance);
             }
         }
 
         Debug.Log("LoadPosition");
+    }
+
+    private void RandomSprite()
+    {
+        _spriteRenderer.sprite = _sprites[UnityEngine.Random.Range(0, _sprites.Count)];
+    }
+    
+    private void SetID()
+    {
+        ID = UnityEngine.Random.Range(0, 100000).ToString();
     }
 
     private void Die()

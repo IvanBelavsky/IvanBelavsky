@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
@@ -8,8 +7,8 @@ public class AudioSettings : MonoBehaviour
 {
     [SerializeField] private AudioMixer _audioMixer;
     [SerializeField] private Slider _slider;
-    [SerializeField] private SaveService _saveService;
 
+    private SaveService _saveService;
     private float _volumeMixer;
 
     [Inject]
@@ -18,8 +17,8 @@ public class AudioSettings : MonoBehaviour
         _saveService = saveService;
     }
 
-    [field: SerializeField] public string ID = "Volume";
-    
+    [field: SerializeField] public string ID { get; private set; } = "Volume";
+
     private void OnEnable()
     {
         _slider.onValueChanged.AddListener(SetValue);
@@ -42,34 +41,24 @@ public class AudioSettings : MonoBehaviour
         SaveSettings(_volumeMixer);
     }
 
-    private void SaveSettings(float volume)
+    public void SaveSettings(float volume)
     {
-        _saveService.CurrentSaveData.AddData(ID, new AudioSettingsSaveData(volume, ID, typeof(AudioSettings)));
-        _saveService.Save();
+        PlayerPrefs.SetFloat(ID, volume);
+        PlayerPrefs.Save();
     }
 
-    private void LoadSettings()
+    public void LoadSettings()
     {
-        if (_saveService.CurrentSaveData.TryGetData<AudioSettingsSaveData>(ID,
-                out AudioSettingsSaveData volumeSaveData))
+        if (PlayerPrefs.HasKey(ID))
         {
-            _slider.value = (volumeSaveData.Volume + 80) / 100;
-            _volumeMixer = volumeSaveData.Volume;
+            float savedVolume = PlayerPrefs.GetFloat(ID);
+            _slider.value = (savedVolume + 80) / 100; 
+            SetValue(_slider.value);
         }
         else
         {
-            _volumeMixer = 20;
+            _slider.value = 1.0f;
+            SetValue(_slider.value);
         }
     }
-}
-
-[Serializable]
-public class AudioSettingsSaveData : SaveDatas
-{
-    public AudioSettingsSaveData(float volume, string id, Type type) : base(id, type)
-    {
-        Volume = volume;
-    }
-
-    public float Volume { get; private set; }
 }

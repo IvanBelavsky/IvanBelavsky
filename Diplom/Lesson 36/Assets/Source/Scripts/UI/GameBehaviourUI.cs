@@ -1,14 +1,11 @@
 using System;
 using UnityEngine;
 using UnityEngine.Audio;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Zenject;
 
 public class GameBehaviourUI : MonoBehaviour
 {
-    public event Action OnClickPauseButton;
-    public event Action OnClickPlayButton;
     public event Action OnClickMainMenuButton;
 
     [SerializeField] private Button _pause;
@@ -20,15 +17,17 @@ public class GameBehaviourUI : MonoBehaviour
 
     private AudioMixer _audioMixer;
     private SceneService _sceneService;
+    private PauseService _pauseService;
     private SaveService _saveService;
     private float _startVolumeSound;
     private bool _isDisableSound;
     private bool _isPause;
 
     [Inject]
-    public void Constructor(SceneService sceneService, SaveService saveService)
+    public void Constructor(SceneService sceneService, PauseService pauseService, SaveService saveService)
     {
         _sceneService = sceneService;
+        _pauseService = pauseService;
         _saveService = saveService;
     }
 
@@ -63,7 +62,7 @@ public class GameBehaviourUI : MonoBehaviour
         _pause.gameObject.SetActive(false);
         _play.gameObject.SetActive(true);
         _audioMixer.SetFloat("MasterVolume", _minVolumeSound);
-        OnClickPauseButton?.Invoke();
+        _pauseService.Pause();
     }
 
     private void ClickPlay()
@@ -73,15 +72,15 @@ public class GameBehaviourUI : MonoBehaviour
         _play.gameObject.SetActive(false);
         if (!_isDisableSound)
             _audioMixer.SetFloat("MasterVolume", _startVolumeSound);
-        OnClickPlayButton?.Invoke();
+        _pauseService.Continue();
     }
 
     private void MainMenu()
     {
-        _sceneService.LoadScene("MenuScene");
         OnClickMainMenuButton?.Invoke();
+        _saveService.SaveObjects();
         ClickPause();
-        _saveService.SavePosition();
+        _sceneService.LoadScene("MenuScene");
     }
 
     private void DisableSound()

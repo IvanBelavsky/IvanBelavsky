@@ -2,6 +2,12 @@ using UnityEngine;
 
 public class EnemyAmmo : AmmoBasic
 {
+    private void Start()
+    {
+        SetID();
+        SetType(AmmoType.enemyType);
+    }
+    
     private void Update()
     {
         Move();

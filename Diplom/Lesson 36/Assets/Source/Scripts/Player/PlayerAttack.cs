@@ -3,12 +3,14 @@ using UnityEngine;
 using Zenject;
 
 [RequireComponent(typeof(AudioSource))]
+[RequireComponent(typeof(FactoryAmmo))]
 public class PlayerAttack : MonoBehaviour
 {
     [SerializeField] private float _delay;
 
     private AmmoPlayer _ammoPlayer;
     private AudioSource _audioSource;
+    private FactoryAmmo _factoryAmmo;
     private Coroutine _spawnTick;
     private DiContainer _diContainer;
     private bool _isCanAttack;
@@ -22,6 +24,7 @@ public class PlayerAttack : MonoBehaviour
 
     private void Awake()
     {
+        _factoryAmmo = GetComponent<FactoryAmmo>();
         _audioSource = GetComponent<AudioSource>();
         _ammoPlayer = Resources.Load<AmmoPlayer>(AssetsPath.Ammo.PlayerAmmo);
     }
@@ -60,8 +63,9 @@ public class PlayerAttack : MonoBehaviour
 
     private IEnumerator SpawnTick()
     {
-        _diContainer.InstantiatePrefab(_ammoPlayer, transform.position, Quaternion.identity, null)
-            .GetComponent<AmmoBasic>();
+        AmmoPlayer ammoPlayer = _factoryAmmo.CreatedPlayerAmmo(transform.position);
+        //  _diContainer.InstantiatePrefab(_ammoPlayer, transform.position, Quaternion.identity, null)
+        //  .GetComponent<AmmoPlayer>();
         yield return new WaitForSeconds(_delay);
         _isCanAttack = false;
     }

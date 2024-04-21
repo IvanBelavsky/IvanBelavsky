@@ -1,25 +1,26 @@
+using UnityEngine;
 using Zenject;
 
 public class GlobalInstaller : MonoInstaller
 {
     public override void InstallBindings()
     {
-        BindTranslateService();
+        BindPauseService();
         BindAnaliticsService();
-        BindSaveService();
+        BindGameInput();
     }
-
-    private void BindSaveService()
+    
+    private void BindPauseService()
     {
-        Container.Bind<SaveService>()
-            .FromComponentInNewPrefabResource(AssetsPath.Services.SaveService)
+        Container.Bind<PauseService>()
+            .FromComponentInNewPrefabResource(AssetsPath.Services.PauseService)
             .AsSingle();
     }
-
-    private void BindTranslateService()
+    
+    private void BindGameInput()
     {
-        Container.Bind<TranslateService>()
-            .FromComponentInNewPrefabResource(AssetsPath.Services.TranslateService)
+        Container.Bind<LoadingServicGame>()
+            .FromComponentInNewPrefabResource(AssetsPath.Services.LoadingSaveData)
             .AsSingle();
     }
     

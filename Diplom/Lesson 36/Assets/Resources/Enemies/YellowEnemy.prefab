@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 768872685292609729}
   - component: {fileID: 6765198228630121162}
   - component: {fileID: 6422274714920411602}
+  - component: {fileID: 7506788913343469648}
   m_Layer: 0
   m_Name: YellowEnemy
   m_TagString: Untagged
@@ -105,7 +106,11 @@ MonoBehaviour:
   _health: 1
   _damage: 1
   _isDie: 0
-  _randomChance: 0
+  _sprites:
+  - {fileID: 21300000, guid: 5500a4eb7184fed4eb5b5e505ffecd91, type: 3}
+  - {fileID: 21300000, guid: f680e5047c3880e4285d455c7e341a44, type: 3}
+  - {fileID: 21300000, guid: 56333afa39cd62b4298f591910f04bc5, type: 3}
+  <ID>k__BackingField: 
 --- !u!50 &2687183092210793498
 Rigidbody2D:
   serializedVersion: 4
@@ -146,6 +151,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 3
+  _startSpeed: 0
   _offsetDistance: 1
 --- !u!114 &768872685292609729
 MonoBehaviour:
@@ -228,3 +234,15 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &7506788913343469648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6312258784409215525}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54871be8984045d8b40922603eb74359, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

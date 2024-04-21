@@ -7,13 +7,13 @@ public static class AssetsPath
         public const string SceneService = "Core/Services/SceneService";
         public const string TranslateService = "Core/Services/TranslateService";
         public const string AnaliticsService = "Analitica/AppMetrica";
+        public const string LoadingSaveData = "Core/Services/GameInput";
     }
     
     public static class Enemy
     {
-        public const string EnemyHealthRed = "Enemies/RedEnemy";
-        public const string EnemyHealthGreen = "Enemies/GreenEnemy";
-        public const string EnemyHealthYellow = "Enemies/YellowEnemy";
+        public const string EnemyHealthRed = "Enemies/Enemy";
+
     }
     
     public static class Player
@@ -32,6 +32,7 @@ public static class AssetsPath
         public const string Attack = "Audio/Attack";
         public const string Hit = "Audio/Hit";
         public const string AudioMixer = "Audio/Master";
+        public const string AudioSettings = "Audio/AudioSettings";
     }
     
     public static class Animation

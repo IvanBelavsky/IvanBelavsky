@@ -9,9 +9,9 @@ public class SceneTransactionInstaller : MonoInstaller
     {
         Container.Bind<PanelFade>().FromInstance(_fadePanel);
 
-        // BindSaveService();
+        BindSaveService();
         BindSceneService();
-        // BindTranslateService();
+        BindTranslateService();
     }
 
     private void BindTranslateService()
